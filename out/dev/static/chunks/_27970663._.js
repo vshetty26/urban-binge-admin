@@ -338,11 +338,19 @@ async function updateOrderStatus(orderId, status) {
 function subscribeToAllOrders(callback) {
     const q = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["query"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["collection"])(__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$firebase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["db"], ORDERS_COLLECTION), (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["orderBy"])("createdAt", "desc"));
     return (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["onSnapshot"])(q, (snapshot)=>{
-        const orders = snapshot.docs.map((d)=>({
+        console.log("📦 Orders snapshot received - Total orders:", snapshot.docs.length);
+        const orders = snapshot.docs.map((d)=>{
+            const data = d.data();
+            console.log("📋 Order:", d.id, data);
+            return {
                 id: d.id,
-                ...d.data()
-            }));
+                ...data
+            };
+        });
+        console.log("✅ Processed orders:", orders.length);
         callback(orders);
+    }, (error)=>{
+        console.error("❌ Orders subscription error:", error);
     });
 }
 async function deleteAllOrders() {

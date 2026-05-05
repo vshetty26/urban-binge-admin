@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { subscribeToAllOrders, updateOrderStatus, deleteAllOrders, Order, OrderStatus } from "@/lib/orders";
+import { subscribeToAllOrders, updateOrderStatus, deleteAllOrders, getAllOrders, Order, OrderStatus } from "@/lib/orders";
 import { FaCheckCircle, FaTimesCircle, FaClock, FaUtensils, FaPhone, FaUser, FaMapMarkerAlt, FaBell, FaBellSlash, FaTrashAlt } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import AdminNavbar from "@/components/AdminNavbar";
@@ -170,18 +170,42 @@ export default function AdminOrdersPage() {
     const [activeTab, setActiveTab] = useState<FilterTab>("placed");
 
     useEffect(() => {
+        console.log("🔄 Orders page mounted - subscribing to orders");
         const unsub = subscribeToAllOrders((allOrders) => {
+            console.log("📥 Orders received in component:", allOrders.length);
+            console.log("📋 Order details:", allOrders);
             setOrders(allOrders);
             setLoading(false);
 
             // Section 9 - Scroll admin dashboard to new order immediately
             if (allOrders.some(o => o.status === "placed")) {
+                console.log("🔔 New placed order detected - scrolling to top");
                 setTimeout(() => {
                     window.scrollTo({ top: 0, behavior: "smooth" });
                 }, 100);
             }
         });
-        return () => unsub();
+        
+        // Fallback: if no orders after 5 seconds, try fetching directly
+        const timeout = setTimeout(async () => {
+            if (orders.length === 0) {
+                console.log("⏱️ No orders received after 5s - trying direct fetch");
+                try {
+                    const allOrders = await getAllOrders();
+                    console.log("📥 Direct fetch - Orders:", allOrders.length);
+                    setOrders(allOrders);
+                    setLoading(false);
+                } catch (err) {
+                    console.error("❌ Direct fetch error:", err);
+                }
+            }
+        }, 5000);
+        
+        return () => {
+            console.log("🔌 Unsubscribing from orders");
+            clearTimeout(timeout);
+            unsub();
+        };
     }, []);
 
     const handleClearAll = async () => {

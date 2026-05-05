@@ -85,8 +85,16 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus): P
 export function subscribeToAllOrders(callback: (orders: Order[]) => void): () => void {
     const q = query(collection(db, ORDERS_COLLECTION), orderBy("createdAt", "desc"));
     return onSnapshot(q, (snapshot) => {
-        const orders = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Order));
+        console.log("📦 Orders snapshot received - Total orders:", snapshot.docs.length);
+        const orders = snapshot.docs.map((d) => {
+            const data = d.data();
+            console.log("📋 Order:", d.id, data);
+            return { id: d.id, ...data } as Order;
+        });
+        console.log("✅ Processed orders:", orders.length);
         callback(orders);
+    }, (error) => {
+        console.error("❌ Orders subscription error:", error);
     });
 }
 /**
