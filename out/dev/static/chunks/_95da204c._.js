@@ -375,11 +375,11 @@ var _s = __turbopack_context__.k.signature(), _s1 = __turbopack_context__.k.sign
 ;
 function StatusBadge(t0) {
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(6);
-    if ($[0] !== "9a8143d88ce41ce0bf007291db6dc4a4f9dee61123b492082d2ebbbc615c5c38") {
+    if ($[0] !== "b59b70f074ddefb904ff5401de78b3dda7d52a515c769f135405cf62cdc4e45d") {
         for(let $i = 0; $i < 6; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "9a8143d88ce41ce0bf007291db6dc4a4f9dee61123b492082d2ebbbc615c5c38";
+        $[0] = "b59b70f074ddefb904ff5401de78b3dda7d52a515c769f135405cf62cdc4e45d";
     }
     const { status } = t0;
     switch(status){
@@ -871,7 +871,7 @@ function AdminOrderCard({ order, onUpdateStatus, isRinging }) {
                                     lineNumber: 174,
                                     columnNumber: 29
                                 }, this),
-                                " Out for Delivery"
+                                " Mark as Out for Delivery"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/orders/page.tsx",
@@ -904,6 +904,28 @@ function AdminOrderCard({ order, onUpdateStatus, isRinging }) {
                         fileName: "[project]/app/orders/page.tsx",
                         lineNumber: 177,
                         columnNumber: 57
+                    }, this),
+                    order.status === "rejected" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex gap-2",
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                            className: "px-5 py-2.5 bg-red-100 text-red-700 rounded-xl font-bold text-sm flex items-center gap-1.5",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaTimesCircle"], {}, void 0, false, {
+                                    fileName: "[project]/app/orders/page.tsx",
+                                    lineNumber: 184,
+                                    columnNumber: 29
+                                }, this),
+                                " Rejected"
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/app/orders/page.tsx",
+                            lineNumber: 183,
+                            columnNumber: 25
+                        }, this)
+                    }, void 0, false, {
+                        fileName: "[project]/app/orders/page.tsx",
+                        lineNumber: 182,
+                        columnNumber: 49
                     }, this)
                 ]
             }, void 0, true, {
@@ -923,11 +945,11 @@ _c1 = AdminOrderCard;
 function AdminOrdersPage() {
     _s1();
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(60);
-    if ($[0] !== "9a8143d88ce41ce0bf007291db6dc4a4f9dee61123b492082d2ebbbc615c5c38") {
+    if ($[0] !== "b59b70f074ddefb904ff5401de78b3dda7d52a515c769f135405cf62cdc4e45d") {
         for(let $i = 0; $i < 60; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "9a8143d88ce41ce0bf007291db6dc4a4f9dee61123b492082d2ebbbc615c5c38";
+        $[0] = "b59b70f074ddefb904ff5401de78b3dda7d52a515c769f135405cf62cdc4e45d";
     }
     let t0;
     if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
@@ -938,7 +960,7 @@ function AdminOrdersPage() {
     }
     const [orders, setOrders] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(t0);
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
-    const [activeTab, setActiveTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("placed");
+    const [activeTab, setActiveTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("out_for_delivery");
     let t1;
     if ($[2] !== orders.length) {
         t1 = ({
@@ -956,6 +978,7 @@ function AdminOrdersPage() {
                         }
                     }
                 }["AdminOrdersPage[useEffect() > subscribeToAllOrders()]"]);
+                const autoTransitionInterval = setInterval(_AdminOrdersPageUseEffectSetInterval, 10000);
                 const timeout = setTimeout({
                     "AdminOrdersPage[useEffect() > setTimeout()]": async ()=>{
                         if (orders.length === 0) {
@@ -976,6 +999,7 @@ function AdminOrdersPage() {
                 return ()=>{
                     console.log("\uD83D\uDD0C Unsubscribing from orders");
                     clearTimeout(timeout);
+                    clearInterval(autoTransitionInterval);
                     unsub();
                 };
             }
@@ -1119,7 +1143,7 @@ function AdminOrdersPage() {
                         className: "text-primary text-xl"
                     }, void 0, false, {
                         fileName: "[project]/app/orders/page.tsx",
-                        lineNumber: 371,
+                        lineNumber: 378,
                         columnNumber: 54
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1129,7 +1153,7 @@ function AdminOrdersPage() {
                                 children: "Urban Binge Admin"
                             }, void 0, false, {
                                 fileName: "[project]/app/orders/page.tsx",
-                                lineNumber: 371,
+                                lineNumber: 378,
                                 columnNumber: 106
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1137,19 +1161,19 @@ function AdminOrdersPage() {
                                 children: "Order Management"
                             }, void 0, false, {
                                 fileName: "[project]/app/orders/page.tsx",
-                                lineNumber: 371,
+                                lineNumber: 378,
                                 columnNumber: 174
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/orders/page.tsx",
-                        lineNumber: 371,
+                        lineNumber: 378,
                         columnNumber: 101
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/orders/page.tsx",
-                lineNumber: 371,
+                lineNumber: 378,
                 columnNumber: 13
             }, this);
             $[35] = t23;
@@ -1166,12 +1190,12 @@ function AdminOrdersPage() {
                     size: 16
                 }, void 0, false, {
                     fileName: "[project]/app/orders/page.tsx",
-                    lineNumber: 378,
+                    lineNumber: 385,
                     columnNumber: 200
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/orders/page.tsx",
-                lineNumber: 378,
+                lineNumber: 385,
                 columnNumber: 13
             }, this);
             $[36] = t24;
@@ -1188,7 +1212,7 @@ function AdminOrdersPage() {
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/orders/page.tsx",
-                lineNumber: 385,
+                lineNumber: 392,
                 columnNumber: 13
             }, this);
             $[37] = counts.placed;
@@ -1206,7 +1230,7 @@ function AdminOrdersPage() {
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/orders/page.tsx",
-                lineNumber: 393,
+                lineNumber: 400,
                 columnNumber: 13
             }, this);
             $[39] = counts.all;
@@ -1233,24 +1257,24 @@ function AdminOrdersPage() {
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/orders/page.tsx",
-                                    lineNumber: 400,
+                                    lineNumber: 407,
                                     columnNumber: 230
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/orders/page.tsx",
-                            lineNumber: 400,
+                            lineNumber: 407,
                             columnNumber: 184
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/orders/page.tsx",
-                    lineNumber: 400,
+                    lineNumber: 407,
                     columnNumber: 84
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/orders/page.tsx",
-                lineNumber: 400,
+                lineNumber: 407,
                 columnNumber: 12
             }, this);
             $[41] = t25;
@@ -1262,7 +1286,7 @@ function AdminOrdersPage() {
         if ($[44] === Symbol.for("react.memo_cache_sentinel")) {
             t8 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$AdminNavbar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                 fileName: "[project]/app/orders/page.tsx",
-                lineNumber: 408,
+                lineNumber: 415,
                 columnNumber: 12
             }, this);
             $[44] = t8;
@@ -1288,18 +1312,18 @@ function AdminOrdersPage() {
                                 ]
                             }, tab.key, true, {
                                 fileName: "[project]/app/orders/page.tsx",
-                                lineNumber: 415,
+                                lineNumber: 422,
                                 columnNumber: 51
                             }, this)
                     }["AdminOrdersPage[tabs.map()]"])
                 }, void 0, false, {
                     fileName: "[project]/app/orders/page.tsx",
-                    lineNumber: 414,
+                    lineNumber: 421,
                     columnNumber: 86
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/orders/page.tsx",
-                lineNumber: 414,
+                lineNumber: 421,
                 columnNumber: 12
             }, this);
             $[45] = activeTab;
@@ -1316,12 +1340,12 @@ function AdminOrdersPage() {
                 className: "animate-spin w-8 h-8 border-3 border-primary border-t-transparent rounded-full"
             }, void 0, false, {
                 fileName: "[project]/app/orders/page.tsx",
-                lineNumber: 427,
+                lineNumber: 434,
                 columnNumber: 76
             }, this)
         }, void 0, false, {
             fileName: "[project]/app/orders/page.tsx",
-            lineNumber: 427,
+            lineNumber: 434,
             columnNumber: 20
         }, this) : filteredOrders.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "text-center py-20",
@@ -1330,7 +1354,7 @@ function AdminOrdersPage() {
                     className: "text-4xl text-gray-300 mx-auto mb-4"
                 }, void 0, false, {
                     fileName: "[project]/app/orders/page.tsx",
-                    lineNumber: 427,
+                    lineNumber: 434,
                     columnNumber: 248
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1342,13 +1366,13 @@ function AdminOrdersPage() {
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/orders/page.tsx",
-                    lineNumber: 427,
+                    lineNumber: 434,
                     columnNumber: 310
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/orders/page.tsx",
-            lineNumber: 427,
+            lineNumber: 434,
             columnNumber: 213
         }, this) : filteredOrders.map({
             "AdminOrdersPage[filteredOrders.map()]": (order)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(AdminOrderCard, {
@@ -1357,7 +1381,7 @@ function AdminOrdersPage() {
                     isRinging: order.status === "placed"
                 }, order.id, false, {
                     fileName: "[project]/app/orders/page.tsx",
-                    lineNumber: 428,
+                    lineNumber: 435,
                     columnNumber: 57
                 }, this)
         }["AdminOrdersPage[filteredOrders.map()]"]);
@@ -1387,7 +1411,7 @@ function AdminOrdersPage() {
             children: t4
         }, void 0, false, {
             fileName: "[project]/app/orders/page.tsx",
-            lineNumber: 451,
+            lineNumber: 458,
             columnNumber: 11
         }, this);
         $[48] = t3;
@@ -1403,7 +1427,7 @@ function AdminOrdersPage() {
             children: t10
         }, void 0, false, {
             fileName: "[project]/app/orders/page.tsx",
-            lineNumber: 460,
+            lineNumber: 467,
             columnNumber: 11
         }, this);
         $[51] = t10;
@@ -1424,7 +1448,7 @@ function AdminOrdersPage() {
             ]
         }, void 0, true, {
             fileName: "[project]/app/orders/page.tsx",
-            lineNumber: 469,
+            lineNumber: 476,
             columnNumber: 11
         }, this);
         $[54] = t11;
@@ -1438,7 +1462,7 @@ function AdminOrdersPage() {
     }
     return t12;
 }
-_s1(AdminOrdersPage, "xiDhHufWZL0EhbR6Sl2m7oHGGOc=");
+_s1(AdminOrdersPage, "MOFOyZy5EygRNIT8aU9bBSOZymg=");
 _c2 = AdminOrdersPage;
 function _AdminOrdersPageOrdersFilter5(o_5) {
     return o_5.status === "delivered";
@@ -1462,6 +1486,10 @@ async function _AdminOrdersPageHandleClearAll() {
     if (confirm("Are you sure you want to erase ALL orders permanently? This cannot be undone.")) {
         await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$orders$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["deleteAllOrders"])();
     }
+}
+async function _AdminOrdersPageUseEffectSetInterval() {
+    console.log("\u23F0 Running auto-transition check");
+    await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$orders$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["autoTransitionAcceptedOrders"])();
 }
 function _AdminOrdersPageUseEffectSubscribeToAllOrdersSetTimeout() {
     window.scrollTo({

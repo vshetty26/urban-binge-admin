@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { subscribeToAllOrders, updateOrderStatus, deleteAllOrders, getAllOrders, Order, OrderStatus } from "@/lib/orders";
+import { subscribeToAllOrders, updateOrderStatus, deleteAllOrders, getAllOrders, autoTransitionAcceptedOrders, Order, OrderStatus } from "@/lib/orders";
 import { FaCheckCircle, FaTimesCircle, FaClock, FaUtensils, FaPhone, FaUser, FaMapMarkerAlt, FaBell, FaBellSlash, FaTrashAlt } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import AdminNavbar from "@/components/AdminNavbar";
@@ -161,7 +161,7 @@ function AdminOrderCard({ order, onUpdateStatus, isRinging }: { order: Order; on
                             disabled={updating}
                             className="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors disabled:opacity-50 cursor-pointer flex items-center gap-1.5 shadow-sm"
                         >
-                            <FaCheckCircle /> Out for Delivery
+                            <FaCheckCircle /> Mark as Out for Delivery
                         </button>
                     </div>
                 )}
@@ -169,6 +169,13 @@ function AdminOrderCard({ order, onUpdateStatus, isRinging }: { order: Order; on
                     <div className="flex gap-2">
                         <span className="px-5 py-2.5 bg-indigo-100 text-indigo-700 rounded-xl font-bold text-sm flex items-center gap-1.5">
                             <FaCheckCircle /> Out for Delivery
+                        </span>
+                    </div>
+                )}
+                {order.status === "rejected" && (
+                    <div className="flex gap-2">
+                        <span className="px-5 py-2.5 bg-red-100 text-red-700 rounded-xl font-bold text-sm flex items-center gap-1.5">
+                            <FaTimesCircle /> Rejected
                         </span>
                     </div>
                 )}
@@ -180,7 +187,7 @@ function AdminOrderCard({ order, onUpdateStatus, isRinging }: { order: Order; on
 export default function AdminOrdersPage() {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<FilterTab>("placed");
+    const [activeTab, setActiveTab] = useState<FilterTab>("out_for_delivery");
 
     useEffect(() => {
         console.log("🔄 Orders page mounted - subscribing to orders");
@@ -198,6 +205,12 @@ export default function AdminOrdersPage() {
                 }, 100);
             }
         });
+        
+        // Auto-transition accepted orders to out_for_delivery
+        const autoTransitionInterval = setInterval(async () => {
+            console.log("⏰ Running auto-transition check");
+            await autoTransitionAcceptedOrders();
+        }, 10000); // Check every 10 seconds
         
         // Fallback: if no orders after 5 seconds, try fetching directly
         const timeout = setTimeout(async () => {
@@ -217,6 +230,7 @@ export default function AdminOrdersPage() {
         return () => {
             console.log("🔌 Unsubscribing from orders");
             clearTimeout(timeout);
+            clearInterval(autoTransitionInterval);
             unsub();
         };
     }, []);

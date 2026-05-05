@@ -821,6 +821,10 @@
     height: calc(var(--spacing) * 24);
   }
 
+  .h-89 {
+    height: calc(var(--spacing) * 89);
+  }
+
   .h-full {
     height: 100%;
   }

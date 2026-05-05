@@ -15,6 +15,7 @@ import {
     writeBatch,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import { calculateDeliveryFee } from "./deliveryFees";
 
 export type OrderStatus = "placed" | "accepted" | "rejected" | "out_for_delivery" | "delivered";
 
@@ -97,6 +98,50 @@ export function subscribeToAllOrders(callback: (orders: Order[]) => void): () =>
         console.error("❌ Orders subscription error:", error);
     });
 }
+
+/**
+ * Auto-transition accepted orders to out_for_delivery after 30 seconds
+ */
+export async function autoTransitionAcceptedOrders(): Promise<void> {
+    try {
+        const q = query(
+            collection(db, ORDERS_COLLECTION),
+            where("status", "==", "accepted")
+        );
+        const snapshot = await getDocs(q);
+        
+        for (const doc of snapshot.docs) {
+            const order = doc.data() as Order;
+            const createdTime = order.createdAt?.seconds || 0;
+            const now = Math.floor(Date.now() / 1000);
+            const ageInSeconds = now - createdTime;
+            
+            // Auto-transition after 30 seconds
+            if (ageInSeconds > 30) {
+                console.log("🚚 Auto-transitioning order to out_for_delivery:", doc.id);
+                await updateOrderStatus(doc.id, "out_for_delivery");
+            }
+        }
+    } catch (err) {
+        console.error("❌ Error auto-transitioning orders:", err);
+    }
+}
+/**
+ * Validate order and calculate delivery fee
+ */
+export function validateAndCalculateDelivery(
+    orderTotal: number,
+    distanceKm: number
+): { isValid: boolean; deliveryFee: number; message: string } {
+    const result = calculateDeliveryFee(orderTotal, distanceKm);
+    
+    return {
+        isValid: result.isEligible,
+        deliveryFee: result.deliveryFee,
+        message: result.reason
+    };
+}
+
 /**
  * Delete all orders from the database.
  */

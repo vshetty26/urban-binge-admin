@@ -296,6 +296,8 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 "use strict";
 
 __turbopack_context__.s([
+    "autoTransitionAcceptedOrders",
+    ()=>autoTransitionAcceptedOrders,
     "deleteAllOrders",
     ()=>deleteAllOrders,
     "getAllOrders",
@@ -352,6 +354,25 @@ function subscribeToAllOrders(callback) {
     }, (error)=>{
         console.error("❌ Orders subscription error:", error);
     });
+}
+async function autoTransitionAcceptedOrders() {
+    try {
+        const q = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["query"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["collection"])(__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$firebase$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["db"], ORDERS_COLLECTION), (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["where"])("status", "==", "accepted"));
+        const snapshot = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getDocs"])(q);
+        for (const doc of snapshot.docs){
+            const order = doc.data();
+            const createdTime = order.createdAt?.seconds || 0;
+            const now = Math.floor(Date.now() / 1000);
+            const ageInSeconds = now - createdTime;
+            // Auto-transition after 30 seconds
+            if (ageInSeconds > 30) {
+                console.log("🚚 Auto-transitioning order to out_for_delivery:", doc.id);
+                await updateOrderStatus(doc.id, "out_for_delivery");
+            }
+        }
+    } catch (err) {
+        console.error("❌ Error auto-transitioning orders:", err);
+    }
 }
 async function deleteAllOrders() {
     const orders = await getAllOrders();
