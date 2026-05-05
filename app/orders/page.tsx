@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import AdminNavbar from "@/components/AdminNavbar";
 import StoreStatusToggle from "@/components/StoreStatusToggle";
 
-type FilterTab = "placed" | "accepted" | "out_for_delivery" | "rejected" | "delivered";
+type FilterTab = "placed" | "accepted" | "rejected" | "delivered";
 
 function StatusBadge({ status }: { status: string }) {
     switch (status) {
@@ -15,12 +15,6 @@ function StatusBadge({ status }: { status: string }) {
             return (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">
                     <FaCheckCircle /> Preparing
-                </span>
-            );
-        case "out_for_delivery":
-            return (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">
-                    <FaCheckCircle /> Out for Delivery
                 </span>
             );
         case "delivered":
@@ -157,17 +151,6 @@ function AdminOrderCard({ order, onUpdateStatus, isRinging }: { order: Order; on
                 {order.status === "accepted" && (
                     <div className="flex gap-2">
                         <button
-                            onClick={() => handleStatusUpdate("out_for_delivery")}
-                            disabled={updating}
-                            className="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors disabled:opacity-50 cursor-pointer flex items-center gap-1.5 shadow-sm"
-                        >
-                            <FaCheckCircle /> Out for Delivery
-                        </button>
-                    </div>
-                )}
-                {order.status === "out_for_delivery" && (
-                    <div className="flex gap-2">
-                        <button
                             onClick={() => handleStatusUpdate("delivered")}
                             disabled={updating}
                             className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 transition-colors disabled:opacity-50 cursor-pointer flex items-center gap-1.5 shadow-sm"
@@ -217,7 +200,6 @@ export default function AdminOrdersPage() {
         all: orders.length,
         placed: orders.filter((o) => o.status === "placed").length,
         accepted: orders.filter((o) => o.status === "accepted").length,
-        out_for_delivery: orders.filter((o) => o.status === "out_for_delivery").length,
         rejected: orders.filter((o) => o.status === "rejected").length,
         delivered: orders.filter((o) => o.status === "delivered").length,
     };
@@ -225,7 +207,6 @@ export default function AdminOrdersPage() {
     const tabs: { key: FilterTab; label: string; color: string }[] = [
         { key: "placed", label: "Pending", color: "bg-yellow-100 text-yellow-700" },
         { key: "accepted", label: "Preparing", color: "bg-green-100 text-green-700" },
-        { key: "out_for_delivery", label: "Out for Delivery", color: "bg-indigo-100 text-indigo-700" },
         { key: "rejected", label: "Rejected", color: "bg-red-100 text-red-700" },
     ];
 

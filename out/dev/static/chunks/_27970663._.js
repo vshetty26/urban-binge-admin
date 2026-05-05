@@ -19,11 +19,11 @@ var _s = __turbopack_context__.k.signature();
 function AuthProvider(t0) {
     _s();
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(20);
-    if ($[0] !== "eb3c88164a8fc244414db998b3448877d75c9f04b2900a31217ad9865deb52a9") {
+    if ($[0] !== "f8fe2e2a1a378791fe01e1255f296bbccadd79dcd9f0e8bdb00ee131850b47a3") {
         for(let $i = 0; $i < 20; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "eb3c88164a8fc244414db998b3448877d75c9f04b2900a31217ad9865deb52a9";
+        $[0] = "f8fe2e2a1a378791fe01e1255f296bbccadd79dcd9f0e8bdb00ee131850b47a3";
     }
     const { children } = t0;
     const [isAuthenticated, setIsAuthenticated] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
@@ -37,17 +37,17 @@ function AuthProvider(t0) {
             "AuthProvider[useEffect()]": ()=>{
                 setMounted(true);
                 if ("TURBOPACK compile-time truthy", 1) {
-                    const sessionStr = localStorage.getItem("chopstick-admin-session");
+                    const sessionStr = localStorage.getItem("urban-binge-admin-session");
                     if (sessionStr) {
                         try {
                             const session = JSON.parse(sessionStr);
                             if (Date.now() - session.loginTime < 79200000) {
                                 setIsAuthenticated(true);
                             } else {
-                                localStorage.removeItem("chopstick-admin-session");
+                                localStorage.removeItem("urban-binge-admin-session");
                             }
                         } catch  {
-                            localStorage.removeItem("chopstick-admin-session");
+                            localStorage.removeItem("urban-binge-admin-session");
                         }
                     }
                 }
@@ -68,7 +68,7 @@ function AuthProvider(t0) {
                 e.preventDefault();
                 if (password === "admin123") {
                     setIsAuthenticated(true);
-                    localStorage.setItem("chopstick-admin-session", JSON.stringify({
+                    localStorage.setItem("urban-binge-admin-session", JSON.stringify({
                         loginTime: Date.now()
                     }));
                     setError("");
@@ -113,7 +113,7 @@ function AuthProvider(t0) {
             }, this);
             t6 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                 className: "text-gray-500 mb-8",
-                children: "Enter password to access Chopstick admin portal."
+                children: "Enter password to access Urban Binge admin portal."
             }, void 0, false, {
                 fileName: "[project]/components/AuthProvider.tsx",
                 lineNumber: 84,
