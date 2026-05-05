@@ -12,7 +12,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     useEffect(() => {
         setMounted(true);
         if (typeof window !== "undefined") {
-            const sessionStr = localStorage.getItem("chopstick-admin-session");
+            const sessionStr = localStorage.getItem("urban-binge-admin-session");
             if (sessionStr) {
                 try {
                     const session = JSON.parse(sessionStr);
@@ -20,10 +20,10 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
                     if (Date.now() - session.loginTime < SESSION_DURATION) {
                         setIsAuthenticated(true);
                     } else {
-                        localStorage.removeItem("chopstick-admin-session");
+                        localStorage.removeItem("urban-binge-admin-session");
                     }
                 } catch {
-                    localStorage.removeItem("chopstick-admin-session");
+                    localStorage.removeItem("urban-binge-admin-session");
                 }
             }
         }
@@ -33,7 +33,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         e.preventDefault();
         if (password === "admin123") {
             setIsAuthenticated(true);
-            localStorage.setItem("chopstick-admin-session", JSON.stringify({
+            localStorage.setItem("urban-binge-admin-session", JSON.stringify({
                 loginTime: Date.now()
             }));
             setError("");
@@ -52,7 +52,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
                         <FaLock />
                     </div>
                     <h1 className="text-2xl font-bold text-gray-900 mb-2">Admin Access</h1>
-                    <p className="text-gray-500 mb-8">Enter password to access Chopstick admin portal.</p>
+                    <p className="text-gray-500 mb-8">Enter password to access Urban Binge admin portal.</p>
                     <form onSubmit={handleLogin} className="space-y-4">
                         <div>
                             <input

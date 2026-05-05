@@ -193,7 +193,7 @@ export default function AdminMenuPage() {
                     <div className="flex items-center gap-3">
                         <FaUtensils className="text-red-600 text-xl" />
                         <div>
-                            <h1 className="text-lg font-bold text-gray-900">Chopstick Admin</h1>
+                            <h1 className="text-lg font-bold text-gray-900">Urban Binge Admin</h1>
                             <p className="text-xs text-gray-500">Live Menu Editor</p>
                         </div>
                     </div>
