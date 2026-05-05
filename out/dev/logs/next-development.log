@@ -13,3 +13,34 @@
 [00:03:43.895] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
 [00:03:45.699] Browser LOG     Wake Lock is active
 [00:03:47.697] Browser LOG     Wake Lock was released
+[00:07:10.710] Browser WARN    [2026-05-05T09:18:52.769Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc65 transport errored. Name: undefined Message: undefined
+[00:07:10.712] Browser WARN    [2026-05-05T09:18:52.774Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc66 transport errored. Name: undefined Message: undefined
+[00:07:13.702] Browser WARN    [2026-05-05T09:18:55.134Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc67 transport errored. Name: undefined Message: undefined
+[00:07:15.709] Browser WARN    [2026-05-05T09:18:57.151Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc68 transport errored. Name: undefined Message: undefined
+[00:07:18.710] Browser WARN    [2026-05-05T09:19:00.132Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc69 transport errored. Name: undefined Message: undefined
+[00:07:23.712] Browser WARN    [2026-05-05T09:19:05.142Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc6a transport errored. Name: undefined Message: undefined
+[00:07:27.724] Browser WARN    [2026-05-05T09:19:09.134Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc6b transport errored. Name: undefined Message: undefined
+[00:08:00.696] Browser WARN    [2026-05-05T09:19:42.964Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc6c transport errored. Name: undefined Message: undefined
+[00:08:34.707] Browser WARN    [2026-05-05T09:20:16.054Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc6d transport errored. Name: undefined Message: undefined
+[00:09:07.696] Browser WARN    [2026-05-05T09:20:49.109Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc6e transport errored. Name: undefined Message: undefined
+[00:09:40.701] Browser WARN    [2026-05-05T09:21:22.156Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc6f transport errored. Name: undefined Message: undefined
+[00:10:13.698] Browser WARN    [2026-05-05T09:21:55.206Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc70 transport errored. Name: undefined Message: undefined
+[00:10:46.714] Browser WARN    [2026-05-05T09:22:28.247Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc71 transport errored. Name: undefined Message: undefined
+[00:28:51.829] Browser WARN    [2026-05-05T09:40:34.065Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc72 transport errored. Name: undefined Message: undefined
+[00:44:08.380] Browser WARN    [2026-05-05T09:55:49.920Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc73 transport errored. Name: undefined Message: undefined
+[01:01:41.043] Browser WARN    [2026-05-05T10:13:23.010Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc74 transport errored. Name: undefined Message: undefined
+[01:02:33.657] Browser WARN    [2026-05-05T10:14:15.515Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc75 transport errored. Name: undefined Message: undefined
+[01:02:33.658] Browser WARN    [2026-05-05T10:14:15.692Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc77 transport errored. Name: undefined Message: undefined
+[01:02:33.658] Browser WARN    [2026-05-05T10:14:15.814Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc78 transport errored. Name: undefined Message: undefined
+[01:02:35.666] Browser WARN    [2026-05-05T10:14:17.110Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc79 transport errored. Name: undefined Message: undefined
+[01:02:37.650] Browser WARN    [2026-05-05T10:14:19.093Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc7a transport errored. Name: undefined Message: undefined
+[01:02:41.652] Browser WARN    [2026-05-05T10:14:23.083Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc7b transport errored. Name: undefined Message: undefined
+[01:18:50.831] Browser WARN    [2026-05-05T10:30:32.773Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc7c transport errored. Name: undefined Message: undefined
+[02:09:45.046] Browser WARN    [2026-05-05T11:21:27.010Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc7d transport errored. Name: undefined Message: undefined
+[02:12:09.728] Browser WARN    [2026-05-05T11:23:51.825Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc7e transport errored. Name: undefined Message: undefined
+[03:46:44.854] Browser WARN    [2026-05-05T12:58:26.196Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc7f transport errored. Name: undefined Message: undefined
+[04:23:02.023] Browser WARN    [2026-05-05T13:34:43.387Z]  @firebase/firestore: Firestore (12.10.0): WebChannelConnection RPC 'Listen' stream 0x2bdcdc80 transport errored. Name: undefined Message: undefined
+[04:27:33.478] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[04:27:34.219] Browser WARN    Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[04:27:35.904] Browser LOG     Wake Lock is active
+[04:27:53.937] Browser LOG     Wake Lock was released
