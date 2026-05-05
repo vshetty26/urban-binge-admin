@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaUtensils, FaStar, FaEnvelope } from "react-icons/fa";
+import { FaUtensils, FaStar, FaUsers } from "react-icons/fa";
 import StoreStatusToggle from "./StoreStatusToggle";
 
 export default function AdminNavbar() {
@@ -11,7 +11,7 @@ export default function AdminNavbar() {
     const links = [
         { href: "/orders", label: "Orders", icon: FaUtensils },
         { href: "/menu", label: "Menu", icon: FaStar },
-        { href: "/inquiries", label: "Inquiries", icon: FaEnvelope },
+        { href: "/users", label: "Users", icon: FaUsers },
     ];
 
     return (

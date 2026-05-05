@@ -1200,11 +1200,11 @@ var _s = __turbopack_context__.k.signature();
 function AdminNavbar() {
     _s();
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(7);
-    if ($[0] !== "913823e92fd2cd5968d2c4199c03bc6651da7e1288b571e36be46abcb989f180") {
+    if ($[0] !== "3d80f72c0a281a3214f6af0069af583b4dedb0747decce4701412f32e0b682de") {
         for(let $i = 0; $i < 7; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "913823e92fd2cd5968d2c4199c03bc6651da7e1288b571e36be46abcb989f180";
+        $[0] = "3d80f72c0a281a3214f6af0069af583b4dedb0747decce4701412f32e0b682de";
     }
     const pathname = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["usePathname"])();
     let t0;
@@ -1221,9 +1221,9 @@ function AdminNavbar() {
                 icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaStar"]
             },
             {
-                href: "/inquiries",
-                label: "Inquiries",
-                icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaEnvelope"]
+                href: "/users",
+                label: "Users",
+                icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaUsers"]
             }
         ];
         $[1] = t0;
