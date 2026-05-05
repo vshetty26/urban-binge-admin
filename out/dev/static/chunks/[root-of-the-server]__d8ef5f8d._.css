@@ -1551,6 +1551,10 @@
     padding-block: calc(var(--spacing) * 20);
   }
 
+  .py-49 {
+    padding-block: calc(var(--spacing) * 49);
+  }
+
   .pt-4 {
     padding-top: calc(var(--spacing) * 4);
   }
@@ -2116,6 +2120,12 @@
   @media (hover: hover) {
     .hover\:bg-green-700:hover {
       background-color: var(--color-green-700);
+    }
+  }
+
+  @media (hover: hover) {
+    .hover\:bg-indigo-700:hover {
+      background-color: var(--color-indigo-700);
     }
   }
 

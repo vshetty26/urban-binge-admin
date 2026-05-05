@@ -16,7 +16,7 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase";
 
-export type OrderStatus = "placed" | "accepted" | "rejected" | "delivered";
+export type OrderStatus = "placed" | "accepted" | "rejected" | "out_for_delivery" | "delivered";
 
 export interface OrderItem {
     id: string;
