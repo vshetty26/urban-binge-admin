@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 14, "column": 0}, "map": {"version":3,"sources":["file:///Users/vamshishetty/Downloads/ChopstickAdmin-main/app/page.tsx"],"sourcesContent":["import { redirect } from \"next/navigation\";\n\nexport default function AdminHome() {\n    redirect(\"/orders\");\n}\n"],"names":[],"mappings":";;;;AAAA;AAAA;;AAEe,SAAS;IACpB,IAAA,iMAAQ,EAAC;AACb"}}]
+}
