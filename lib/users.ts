@@ -207,6 +207,25 @@ export async function getUsersByTimeRange(days: number): Promise<UserData[]> {
 }
 
 /**
+ * Get users within a specific date range
+ */
+export async function getUsersByDateRange(startDate: Date, endDate: Date): Promise<UserData[]> {
+    const start = startDate.getTime();
+    const end = endDate.getTime() + 24 * 60 * 60 * 1000; // Include entire end day
+    
+    const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    
+    return snapshot.docs
+        .map((d) => ({ id: d.id, ...d.data() } as UserData))
+        .filter((user) => {
+            if (!user.createdAt) return false;
+            const createdTime = user.createdAt.seconds * 1000;
+            return createdTime >= start && createdTime <= end;
+        });
+}
+
+/**
  * Mark users as exported
  */
 export async function markUsersAsExported(userIds: string[]): Promise<void> {

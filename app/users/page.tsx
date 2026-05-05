@@ -5,16 +5,18 @@ import {
     subscribeToVisibleUsers,
     subscribeToOrdersAndSyncUsers,
     getUsersByTimeRange,
+    getUsersByDateRange,
     markUsersAsExported,
     exportUsersToCSV,
     downloadCSV,
     UserData 
 } from "@/lib/users";
-import { FaUsers, FaUser, FaPhone, FaAt, FaMapMarkerAlt, FaDownload } from "react-icons/fa";
+import { FaUsers, FaUser, FaPhone, FaAt, FaMapMarkerAlt, FaDownload, FaTimes, FaCalendar } from "react-icons/fa";
 import AdminNavbar from "@/components/AdminNavbar";
 import StoreStatusToggle from "@/components/StoreStatusToggle";
 
 type FilterType = "all" | "7days" | "1month" | "1week";
+type ExportType = "preset" | "custom";
 
 export default function UsersPage() {
     const [visibleUsers, setVisibleUsers] = useState<UserData[]>([]);
@@ -22,6 +24,12 @@ export default function UsersPage() {
     const [loading, setLoading] = useState(true);
     const [exporting, setExporting] = useState(false);
     const [filter, setFilter] = useState<FilterType>("all");
+    const [showExportModal, setShowExportModal] = useState(false);
+    const [exportType, setExportType] = useState<ExportType>("preset");
+    const [selectedPreset, setSelectedPreset] = useState<"24h" | "7days" | "1month">("24h");
+    const [startDate, setStartDate] = useState<string>("");
+    const [endDate, setEndDate] = useState<string>("");
+    const [usersToExport, setUsersToExport] = useState<UserData[]>([]);
 
     // Subscribe to visible users (24-hour rule) and sync orders to users
     useEffect(() => {
@@ -65,6 +73,77 @@ export default function UsersPage() {
         };
         applyFilter();
     }, [filter, visibleUsers]);
+
+    const handleExportClick = () => {
+        setShowExportModal(true);
+    };
+
+    const handleExportConfirm = async () => {
+        let usersForExport: UserData[] = [];
+
+        if (exportType === "preset") {
+            // Get users based on preset
+            if (selectedPreset === "24h") {
+                usersForExport = visibleUsers.filter((user) => {
+                    if (!user.createdAt) return false;
+                    const ageInHours = (Date.now() - user.createdAt.seconds * 1000) / (1000 * 60 * 60);
+                    return ageInHours < 24;
+                });
+            } else if (selectedPreset === "7days") {
+                const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+                usersForExport = visibleUsers.filter((user) => {
+                    if (!user.createdAt) return false;
+                    return user.createdAt.seconds * 1000 >= sevenDaysAgo;
+                });
+            } else if (selectedPreset === "1month") {
+                const oneMonthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+                usersForExport = visibleUsers.filter((user) => {
+                    if (!user.createdAt) return false;
+                    return user.createdAt.seconds * 1000 >= oneMonthAgo;
+                });
+            }
+        } else {
+            // Custom date range
+            if (!startDate || !endDate) {
+                alert("Please select both start and end dates");
+                return;
+            }
+
+            const start = new Date(startDate).getTime();
+            const end = new Date(endDate).getTime() + 24 * 60 * 60 * 1000; // Include entire end day
+
+            usersForExport = visibleUsers.filter((user) => {
+                if (!user.createdAt) return false;
+                const userTime = user.createdAt.seconds * 1000;
+                return userTime >= start && userTime <= end;
+            });
+        }
+
+        if (usersForExport.length === 0) {
+            alert("No users found for the selected date range");
+            return;
+        }
+
+        setExporting(true);
+        try {
+            // Generate CSV
+            const csv = exportUsersToCSV(usersForExport);
+            const timestamp = new Date().toISOString().split("T")[0];
+            downloadCSV(csv, `urban-binge-users-${timestamp}.csv`);
+
+            // Mark as exported
+            const userIds = usersForExport.map((u) => u.id!).filter(Boolean);
+            await markUsersAsExported(userIds);
+
+            alert(`Exported ${usersForExport.length} user(s) successfully!`);
+            setShowExportModal(false);
+        } catch (error) {
+            console.error("Export error:", error);
+            alert("Error exporting users");
+        } finally {
+            setExporting(false);
+        }
+    };
 
     const handleExport = async () => {
         if (filteredUsers.length === 0) {
@@ -181,12 +260,12 @@ export default function UsersPage() {
                             </button>
                         </div>
                         <button
-                            onClick={handleExport}
-                            disabled={filteredUsers.length === 0 || exporting}
+                            onClick={handleExportClick}
+                            disabled={visibleUsers.length === 0}
                             className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-medium text-sm hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
                         >
                             <FaDownload size={14} />
-                            {exporting ? "Exporting..." : `Export (${filteredUsers.length})`}
+                            Export
                         </button>
                     </div>
                 </div>
@@ -275,6 +354,146 @@ export default function UsersPage() {
                     </div>
                 )}
             </div>
+
+            {/* Export Modal */}
+            {showExportModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
+                        {/* Modal Header */}
+                        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                            <div className="flex items-center gap-3">
+                                <FaDownload className="text-green-600 text-xl" />
+                                <h2 className="text-xl font-bold text-gray-900">Export Users</h2>
+                            </div>
+                            <button
+                                onClick={() => setShowExportModal(false)}
+                                className="text-gray-400 hover:text-gray-600 transition-colors"
+                            >
+                                <FaTimes size={20} />
+                            </button>
+                        </div>
+
+                        {/* Modal Body */}
+                        <div className="p-6 space-y-6">
+                            {/* Export Type Selection */}
+                            <div className="space-y-3">
+                                <label className="block text-sm font-semibold text-gray-900">Export Type</label>
+                                <div className="space-y-2">
+                                    <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors" style={{borderColor: exportType === "preset" ? "#2563eb" : undefined, backgroundColor: exportType === "preset" ? "#eff6ff" : undefined}}>
+                                        <input
+                                            type="radio"
+                                            name="exportType"
+                                            value="preset"
+                                            checked={exportType === "preset"}
+                                            onChange={(e) => setExportType(e.target.value as ExportType)}
+                                            className="w-4 h-4"
+                                        />
+                                        <span className="text-sm font-medium text-gray-700">Preset Date Range</span>
+                                    </label>
+                                    <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors" style={{borderColor: exportType === "custom" ? "#2563eb" : undefined, backgroundColor: exportType === "custom" ? "#eff6ff" : undefined}}>
+                                        <input
+                                            type="radio"
+                                            name="exportType"
+                                            value="custom"
+                                            checked={exportType === "custom"}
+                                            onChange={(e) => setExportType(e.target.value as ExportType)}
+                                            className="w-4 h-4"
+                                        />
+                                        <span className="text-sm font-medium text-gray-700">Custom Date Range</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* Preset Options */}
+                            {exportType === "preset" && (
+                                <div className="space-y-3">
+                                    <label className="block text-sm font-semibold text-gray-900">Select Period</label>
+                                    <div className="space-y-2">
+                                        <button
+                                            onClick={() => setSelectedPreset("24h")}
+                                            className={`w-full p-3 text-left rounded-lg font-medium transition-colors ${
+                                                selectedPreset === "24h"
+                                                    ? "bg-blue-600 text-white"
+                                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                            }`}
+                                        >
+                                            Last 24 Hours
+                                        </button>
+                                        <button
+                                            onClick={() => setSelectedPreset("7days")}
+                                            className={`w-full p-3 text-left rounded-lg font-medium transition-colors ${
+                                                selectedPreset === "7days"
+                                                    ? "bg-blue-600 text-white"
+                                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                            }`}
+                                        >
+                                            Last 7 Days
+                                        </button>
+                                        <button
+                                            onClick={() => setSelectedPreset("1month")}
+                                            className={`w-full p-3 text-left rounded-lg font-medium transition-colors ${
+                                                selectedPreset === "1month"
+                                                    ? "bg-blue-600 text-white"
+                                                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                            }`}
+                                        >
+                                            Last 1 Month
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Custom Date Range */}
+                            {exportType === "custom" && (
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-900 mb-2">Start Date</label>
+                                        <div className="flex items-center gap-2 p-3 border border-gray-300 rounded-lg">
+                                            <FaCalendar className="text-gray-400" />
+                                            <input
+                                                type="date"
+                                                value={startDate}
+                                                onChange={(e) => setStartDate(e.target.value)}
+                                                className="flex-1 outline-none text-sm"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-900 mb-2">End Date</label>
+                                        <div className="flex items-center gap-2 p-3 border border-gray-300 rounded-lg">
+                                            <FaCalendar className="text-gray-400" />
+                                            <input
+                                                type="date"
+                                                value={endDate}
+                                                onChange={(e) => setEndDate(e.target.value)}
+                                                className="flex-1 outline-none text-sm"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-50">
+                            <button
+                                onClick={() => setShowExportModal(false)}
+                                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-100 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleExportConfirm}
+                                disabled={exporting}
+                                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:bg-gray-400 transition-colors flex items-center justify-center gap-2"
+                            >
+                                <FaDownload size={14} />
+                                {exporting ? "Exporting..." : "Export"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </main>
     );
 }
