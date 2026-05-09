@@ -82,17 +82,27 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus): P
 /**
  * Subscribe to real-time updates for ALL orders (admin).
  * Returns an unsubscribe function.
+ * Optimized: Minimal logging to prevent console blocking under high load
  */
 export function subscribeToAllOrders(callback: (orders: Order[]) => void): () => void {
     const q = query(collection(db, ORDERS_COLLECTION), orderBy("createdAt", "desc"));
+    let lastLogTime = 0;
+    const LOG_THROTTLE_MS = 5000; // Log only every 5 seconds
+    
     return onSnapshot(q, (snapshot) => {
-        console.log("📦 Orders snapshot received - Total orders:", snapshot.docs.length);
-        const orders = snapshot.docs.map((d) => {
-            const data = d.data();
-            console.log("📋 Order:", d.id, data);
-            return { id: d.id, ...data } as Order;
-        });
-        console.log("✅ Processed orders:", orders.length);
+        const now = Date.now();
+        const shouldLog = now - lastLogTime > LOG_THROTTLE_MS;
+        
+        if (shouldLog) {
+            console.log(`📦 Orders snapshot: ${snapshot.docs.length} total`);
+            lastLogTime = now;
+        }
+        
+        const orders = snapshot.docs.map((d) => ({
+            id: d.id,
+            ...d.data()
+        } as Order));
+        
         callback(orders);
     }, (error) => {
         console.error("❌ Orders subscription error:", error);

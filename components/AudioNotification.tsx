@@ -11,7 +11,6 @@ async function playCustomSound(audioPath: string = "/ORDER%20RINGTONE.m4a") {
         const audio = new Audio(audioPath);
         audio.volume = 1.0; // Full volume
         await audio.play();
-        console.log(`🔊 Playing custom sound: ${audioPath}`);
     } catch (err) {
         console.error(`❌ Error playing sound: ${err}`);
     }
@@ -77,7 +76,6 @@ export default function AudioNotification() {
         if ('wakeLock' in navigator) {
             try {
                 wakeLockRef.current = await (navigator as any).wakeLock.request('screen');
-                console.log('✅ Wake Lock is active');
                 
                 wakeLockRef.current.addEventListener('release', () => {
                     console.log('⚠️ Wake Lock was released');
@@ -97,14 +95,12 @@ export default function AudioNotification() {
 
         // Unlock audio context
         if (ctx.state === "suspended") {
-            console.log("🔓 Resuming suspended audio context...");
             await ctx.resume().catch((err) => {
                 console.error("❌ Failed to resume audio context:", err);
             });
         }
 
         // Play initial test sound
-        console.log("🔊 Playing test sound...");
         if (useCustomSound) {
             await playCustomSound();
         } else {
@@ -120,7 +116,6 @@ export default function AudioNotification() {
 
         // If there are already pending orders, start the bell
         if (pendingCount.current > 0) {
-            console.log("📢 Starting bell for pending orders...");
             workerRef.current?.postMessage('start');
         }
     };
@@ -132,12 +127,10 @@ export default function AudioNotification() {
             self.onmessage = function(e) {
                 if (e.data === 'start') {
                     if (!timer) {
-                        console.log('🔔 Worker: Starting bell timer');
                         timer = setInterval(() => self.postMessage('tick'), 2000);
                         self.postMessage('tick');
                     }
                 } else if (e.data === 'stop') {
-                    console.log('🔔 Worker: Stopping bell timer');
                     clearInterval(timer);
                     timer = null;
                 }
@@ -153,7 +146,6 @@ export default function AudioNotification() {
 
             // Resume context if suspended
             if (ctx.state === "suspended") {
-                console.log("🔓 Resuming audio context from worker...");
                 await ctx.resume().catch(() => {});
             }
 
@@ -162,7 +154,6 @@ export default function AudioNotification() {
                 const now = Date.now();
                 // Throttle bell to every 2 seconds max
                 if (now - lastBellTime.current > 1500) {
-                    console.log(`🔊 Playing bell sound (${pendingCount.current} pending orders)`);
                     if (useCustomSound) {
                         await playCustomSound();
                     } else {
@@ -181,7 +172,6 @@ export default function AudioNotification() {
         // Re-request wake lock when page becomes visible
         const handleVisibilityChange = () => {
             if (document.visibilityState === 'visible') {
-                console.log("👁️ Page became visible, re-requesting wake lock...");
                 requestWakeLock();
             }
         };
@@ -203,10 +193,8 @@ export default function AudioNotification() {
 
     const startBell = () => {
         if (!alertsEnabled.current) {
-            console.log("⚠️ Audio not initialized yet");
             return;
         }
-        console.log("📢 Starting bell...");
         workerRef.current?.postMessage('start');
     };
 
@@ -216,13 +204,10 @@ export default function AudioNotification() {
             const previousCount = pendingCount.current;
             pendingCount.current = pendingOrders.length;
 
-            console.log(`📊 Orders: ${pendingOrders.length} pending (was ${previousCount})`);
-
             // Alert for new orders
             pendingOrders.forEach(order => {
                 if (order.id && !alertedOrders.current.has(order.id)) {
                     alertedOrders.current.add(order.id);
-                    console.log(`🆕 New order: ${order.id} from ${order.customerName}`);
 
                     if ("Notification" in window && Notification.permission === "granted") {
                         new Notification("🔔 New Order Received", {

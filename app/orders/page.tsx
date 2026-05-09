@@ -195,16 +195,12 @@ export default function AdminOrdersPage() {
     const [activeTab, setActiveTab] = useState<FilterTab>("out_for_delivery");
 
     useEffect(() => {
-        console.log("🔄 Orders page mounted - subscribing to orders");
         const unsub = subscribeToAllOrders((allOrders) => {
-            console.log("📥 Orders received in component:", allOrders.length);
-            console.log("📋 Order details:", allOrders);
             setOrders(allOrders);
             setLoading(false);
 
-            // Section 9 - Scroll admin dashboard to new order immediately
+            // Scroll admin dashboard to new order immediately
             if (allOrders.some(o => o.status === "placed")) {
-                console.log("🔔 New placed order detected - scrolling to top");
                 setTimeout(() => {
                     window.scrollTo({ top: 0, behavior: "smooth" });
                 }, 100);
@@ -213,17 +209,14 @@ export default function AdminOrdersPage() {
         
         // Auto-transition accepted orders to out_for_delivery
         const autoTransitionInterval = setInterval(async () => {
-            console.log("⏰ Running auto-transition check");
             await autoTransitionAcceptedOrders();
         }, 10000); // Check every 10 seconds
         
         // Fallback: if no orders after 5 seconds, try fetching directly
         const timeout = setTimeout(async () => {
             if (orders.length === 0) {
-                console.log("⏱️ No orders received after 5s - trying direct fetch");
                 try {
                     const allOrders = await getAllOrders();
-                    console.log("📥 Direct fetch - Orders:", allOrders.length);
                     setOrders(allOrders);
                     setLoading(false);
                 } catch (err) {
@@ -233,7 +226,6 @@ export default function AdminOrdersPage() {
         }, 5000);
         
         return () => {
-            console.log("🔌 Unsubscribing from orders");
             clearTimeout(timeout);
             clearInterval(autoTransitionInterval);
             unsub();
