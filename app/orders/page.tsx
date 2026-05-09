@@ -125,8 +125,13 @@ function AdminOrderCard({ order, onUpdateStatus, isRinging }: { order: Order; on
                     <div className="flex items-center gap-2 mb-1">
                         <p className="text-xs text-gray-400">Total</p>
                         {order.address.distance && (
-                            <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded flex items-center gap-1">
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1 ${
+                                parseFloat(order.address.distance) > 3 
+                                    ? "bg-red-50 text-red-600 border border-red-200" 
+                                    : "bg-blue-50 text-blue-600 border border-blue-200"
+                            }`}>
                                 <FaMapMarkerAlt size={8} /> {order.address.distance} km
+                                {parseFloat(order.address.distance) > 3 && " ⚠️ OUT OF RANGE"}
                             </span>
                         )}
                     </div>

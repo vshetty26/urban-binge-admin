@@ -36,14 +36,15 @@ function playBellStrike(audioCtx: AudioContext, startTime: number) {
     });
 }
 
-// Silent tick to keep AudioContext active
-function playSilentTick(audioCtx: AudioContext) {
+// Keep-alive tick with audible volume
+function playKeepAliveTick(audioCtx: AudioContext) {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
-    gain.gain.value = 0.0001; // Extremely low gain, practically silent
+    gain.gain.value = 0.01;
+    osc.frequency.value = 100;
     osc.connect(gain).connect(audioCtx.destination);
     osc.start();
-    osc.stop(audioCtx.currentTime + 0.1);
+    osc.stop(audioCtx.currentTime + 0.05);
 }
 
 export default function AudioNotification() {
@@ -56,19 +57,20 @@ export default function AudioNotification() {
     const workerRef = useRef<Worker | null>(null);
     const audioCtxRef = useRef<AudioContext | null>(null);
     const wakeLockRef = useRef<any>(null);
+    const lastBellTime = useRef<number>(0);
 
     // Request Wake Lock to prevent system sleep
     const requestWakeLock = async () => {
         if ('wakeLock' in navigator) {
             try {
                 wakeLockRef.current = await (navigator as any).wakeLock.request('screen');
-                console.log('Wake Lock is active');
+                console.log('✅ Wake Lock is active');
                 
                 wakeLockRef.current.addEventListener('release', () => {
-                    console.log('Wake Lock was released');
+                    console.log('⚠️ Wake Lock was released');
                 });
             } catch (err: any) {
-                console.error(`${err.name}, ${err.message}`);
+                console.error(`❌ Wake Lock Error: ${err.name}, ${err.message}`);
             }
         }
     };
@@ -82,11 +84,15 @@ export default function AudioNotification() {
 
         // Unlock audio context
         if (ctx.state === "suspended") {
-            await ctx.resume().catch(() => { });
+            console.log("🔓 Resuming suspended audio context...");
+            await ctx.resume().catch((err) => {
+                console.error("❌ Failed to resume audio context:", err);
+            });
         }
 
-        // Test sound and initialize
-        playSilentTick(ctx);
+        // Play initial test sound
+        console.log("🔊 Playing test sound...");
+        createBellSound(ctx);
         
         alertsEnabled.current = true;
         setAudioInitialized(true);
@@ -97,22 +103,25 @@ export default function AudioNotification() {
 
         // If there are already pending orders, start the bell
         if (pendingCount.current > 0) {
+            console.log("📢 Starting bell for pending orders...");
             workerRef.current?.postMessage('start');
         }
     };
 
     useEffect(() => {
-        // Section 7 - Initialize Anti-Throttling Web Worker
+        // Initialize Web Worker for reliable timing
         const workerCode = `
             let timer = null;
             self.onmessage = function(e) {
                 if (e.data === 'start') {
                     if (!timer) {
-                        // Heartbeat/Ring every 3 seconds
-                        timer = setInterval(() => self.postMessage('tick'), 3000);
+                        console.log('🔔 Worker: Starting bell timer');
+                        // Ring every 2 seconds for faster response
+                        timer = setInterval(() => self.postMessage('tick'), 2000);
                         self.postMessage('tick');
                     }
                 } else if (e.data === 'stop') {
+                    console.log('🔔 Worker: Stopping bell timer');
                     clearInterval(timer);
                     timer = null;
                 }
@@ -126,22 +135,31 @@ export default function AudioNotification() {
             const ctx = audioCtxRef.current;
             if (!ctx || !alertsEnabled.current) return;
 
+            // Resume context if suspended
             if (ctx.state === "suspended") {
-                await ctx.resume().catch(() => { });
+                console.log("🔓 Resuming audio context from worker...");
+                await ctx.resume().catch(() => {});
             }
 
+            // Play sound based on pending orders
             if (pendingCount.current > 0) {
-                // Actually ring
-                createBellSound(ctx);
+                const now = Date.now();
+                // Throttle bell to every 2 seconds max
+                if (now - lastBellTime.current > 1500) {
+                    console.log(`🔊 Playing bell sound (${pendingCount.current} pending orders)`);
+                    createBellSound(ctx);
+                    lastBellTime.current = now;
+                }
             } else {
-                // Keep alive silent tick
-                playSilentTick(ctx);
+                // Keep audio context alive with quiet tick
+                playKeepAliveTick(ctx);
             }
         };
 
         // Re-request wake lock when page becomes visible
         const handleVisibilityChange = () => {
-            if (wakeLockRef.current !== null && document.visibilityState === 'visible') {
+            if (document.visibilityState === 'visible') {
+                console.log("👁️ Page became visible, re-requesting wake lock...");
                 requestWakeLock();
             }
         };
@@ -162,17 +180,17 @@ export default function AudioNotification() {
     }, []);
 
     const startBell = () => {
-        if (!alertsEnabled.current) return;
+        if (!alertsEnabled.current) {
+            console.log("⚠️ Audio not initialized yet");
+            return;
+        }
+        console.log("📢 Starting bell...");
         workerRef.current?.postMessage('start');
     };
 
     const stopBell = () => {
-        // We actually want the worker to keep running for keep-alive, 
-        // but we'll control the sound based on pendingCount.
-        // However, if we want to save some CPU we could stop it if NO orders and NO keep-alive needed.
-        // User said "every 3 seconds calls out so it does not sleep", so we keep it running.
         if (pendingCount.current === 0) {
-            // Keep it starting if we want the 3s keep-alive
+            console.log("🛑 No pending orders, keeping worker alive for keep-alive...");
             workerRef.current?.postMessage('start');
         }
     };
@@ -180,21 +198,29 @@ export default function AudioNotification() {
     useEffect(() => {
         const unsub = subscribeToAllOrders((allOrders) => {
             const pendingOrders = allOrders.filter(o => o.status === "placed");
+            const previousCount = pendingCount.current;
             pendingCount.current = pendingOrders.length;
 
+            console.log(`📊 Orders: ${pendingOrders.length} pending (was ${previousCount})`);
+
+            // Alert for new orders
             pendingOrders.forEach(order => {
                 if (order.id && !alertedOrders.current.has(order.id)) {
                     alertedOrders.current.add(order.id);
+                    console.log(`🆕 New order: ${order.id} from ${order.customerName}`);
 
                     if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("New Order Received", {
-                            body: `A new order has arrived from ${order.customerName}.`,
-                            icon: "/favicon.ico"
+                        new Notification("🔔 New Order Received", {
+                            body: `Order from ${order.customerName}`,
+                            icon: "/favicon.ico",
+                            tag: "order-notification",
+                            requireInteraction: true
                         });
                     }
                 }
             });
 
+            // Clean up alerted orders that are no longer pending
             const pendingIds = new Set(pendingOrders.map(o => o.id));
             alertedOrders.current.forEach(id => {
                 if (!pendingIds.has(id)) {
@@ -261,4 +287,3 @@ export default function AudioNotification() {
         </>
     );
 }
-
