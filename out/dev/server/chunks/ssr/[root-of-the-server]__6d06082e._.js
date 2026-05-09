@@ -364,17 +364,19 @@ async function updateOrderStatus(orderId, status) {
 }
 function subscribeToAllOrders(callback) {
     const q = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$node$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["query"])((0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$node$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["collection"])(__TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$firebase$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["db"], ORDERS_COLLECTION), (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$node$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["orderBy"])("createdAt", "desc"));
+    let lastLogTime = 0;
+    const LOG_THROTTLE_MS = 5000; // Log only every 5 seconds
     return (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$firebase$2f$firestore$2f$dist$2f$index$2e$node$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["onSnapshot"])(q, (snapshot)=>{
-        console.log("📦 Orders snapshot received - Total orders:", snapshot.docs.length);
-        const orders = snapshot.docs.map((d)=>{
-            const data = d.data();
-            console.log("📋 Order:", d.id, data);
-            return {
+        const now = Date.now();
+        const shouldLog = now - lastLogTime > LOG_THROTTLE_MS;
+        if (shouldLog) {
+            console.log(`📦 Orders snapshot: ${snapshot.docs.length} total`);
+            lastLogTime = now;
+        }
+        const orders = snapshot.docs.map((d)=>({
                 id: d.id,
-                ...data
-            };
-        });
-        console.log("✅ Processed orders:", orders.length);
+                ...d.data()
+            }));
         callback(orders);
     }, (error)=>{
         console.error("❌ Orders subscription error:", error);
@@ -438,7 +440,17 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$ico
 ;
 ;
 ;
-// ─── Loud Bell Sound via Web Audio API ───
+// ─── Play Custom Audio File ───
+async function playCustomSound(audioPath = "/ORDER%20RINGTONE.m4a") {
+    try {
+        const audio = new Audio(audioPath);
+        audio.volume = 1.0; // Full volume
+        await audio.play();
+    } catch (err) {
+        console.error(`❌ Error playing sound: ${err}`);
+    }
+}
+// ─── Fallback: Loud Bell Sound via Web Audio API ───
 function createBellSound(audioCtx) {
     playBellStrike(audioCtx, audioCtx.currentTime);
     playBellStrike(audioCtx, audioCtx.currentTime + 0.25);
@@ -478,35 +490,37 @@ function playBellStrike(audioCtx, startTime) {
         osc.stop(startTime + durations[i]);
     });
 }
-// Silent tick to keep AudioContext active
-function playSilentTick(audioCtx) {
+// Keep-alive tick with audible volume
+function playKeepAliveTick(audioCtx) {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
-    gain.gain.value = 0.0001; // Extremely low gain, practically silent
+    gain.gain.value = 0.01;
+    osc.frequency.value = 100;
     osc.connect(gain).connect(audioCtx.destination);
     osc.start();
-    osc.stop(audioCtx.currentTime + 0.1);
+    osc.stop(audioCtx.currentTime + 0.05);
 }
 function AudioNotification() {
     const [showOverlay, setShowOverlay] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(true);
     const [audioInitialized, setAudioInitialized] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [useCustomSound, setUseCustomSound] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(true); // true = custom ringtone, false = bell
     const alertsEnabled = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(false);
     const alertedOrders = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(new Set());
     const pendingCount = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(0);
     const workerRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(null);
     const audioCtxRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(null);
     const wakeLockRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(null);
+    const lastBellTime = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRef"])(0);
     // Request Wake Lock to prevent system sleep
     const requestWakeLock = async ()=>{
         if ('wakeLock' in navigator) {
             try {
                 wakeLockRef.current = await navigator.wakeLock.request('screen');
-                console.log('Wake Lock is active');
                 wakeLockRef.current.addEventListener('release', ()=>{
-                    console.log('Wake Lock was released');
+                    console.log('⚠️ Wake Lock was released');
                 });
             } catch (err) {
-                console.error(`${err.name}, ${err.message}`);
+                console.error(`❌ Wake Lock Error: ${err.name}, ${err.message}`);
             }
         }
     };
@@ -518,10 +532,16 @@ function AudioNotification() {
         const ctx = audioCtxRef.current;
         // Unlock audio context
         if (ctx.state === "suspended") {
-            await ctx.resume().catch(()=>{});
+            await ctx.resume().catch((err)=>{
+                console.error("❌ Failed to resume audio context:", err);
+            });
         }
-        // Test sound and initialize
-        playSilentTick(ctx);
+        // Play initial test sound
+        if (useCustomSound) {
+            await playCustomSound();
+        } else {
+            createBellSound(ctx);
+        }
         alertsEnabled.current = true;
         setAudioInitialized(true);
         setShowOverlay(false);
@@ -533,14 +553,13 @@ function AudioNotification() {
         }
     };
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        // Section 7 - Initialize Anti-Throttling Web Worker
+        // Initialize Web Worker for reliable timing
         const workerCode = `
             let timer = null;
             self.onmessage = function(e) {
                 if (e.data === 'start') {
                     if (!timer) {
-                        // Heartbeat/Ring every 3 seconds
-                        timer = setInterval(() => self.postMessage('tick'), 3000);
+                        timer = setInterval(() => self.postMessage('tick'), 2000);
                         self.postMessage('tick');
                     }
                 } else if (e.data === 'stop') {
@@ -559,20 +578,32 @@ function AudioNotification() {
         worker.onmessage = async ()=>{
             const ctx = audioCtxRef.current;
             if (!ctx || !alertsEnabled.current) return;
+            // Resume context if suspended
             if (ctx.state === "suspended") {
                 await ctx.resume().catch(()=>{});
             }
+            // Play sound based on pending orders
             if (pendingCount.current > 0) {
-                // Actually ring
-                createBellSound(ctx);
+                const now = Date.now();
+                // Throttle bell to every 2 seconds max
+                if (now - lastBellTime.current > 1500) {
+                    if (useCustomSound) {
+                        await playCustomSound();
+                    } else {
+                        createBellSound(ctx);
+                    }
+                    lastBellTime.current = now;
+                }
             } else {
-                // Keep alive silent tick
-                playSilentTick(ctx);
+                // Keep audio context alive with quiet tick
+                if (!useCustomSound) {
+                    playKeepAliveTick(ctx);
+                }
             }
         };
         // Re-request wake lock when page becomes visible
         const handleVisibilityChange = ()=>{
-            if (wakeLockRef.current !== null && document.visibilityState === 'visible') {
+            if (document.visibilityState === 'visible') {
                 requestWakeLock();
             }
         };
@@ -588,36 +619,35 @@ function AudioNotification() {
                 wakeLockRef.current.release().catch(()=>{});
             }
         };
-    }, []);
+    }, [
+        useCustomSound
+    ]);
     const startBell = ()=>{
-        if (!alertsEnabled.current) return;
-        workerRef.current?.postMessage('start');
-    };
-    const stopBell = ()=>{
-        // We actually want the worker to keep running for keep-alive, 
-        // but we'll control the sound based on pendingCount.
-        // However, if we want to save some CPU we could stop it if NO orders and NO keep-alive needed.
-        // User said "every 3 seconds calls out so it does not sleep", so we keep it running.
-        if (pendingCount.current === 0) {
-            // Keep it starting if we want the 3s keep-alive
-            workerRef.current?.postMessage('start');
+        if (!alertsEnabled.current) {
+            return;
         }
+        workerRef.current?.postMessage('start');
     };
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         const unsub = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$orders$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["subscribeToAllOrders"])((allOrders)=>{
             const pendingOrders = allOrders.filter((o)=>o.status === "placed");
+            const previousCount = pendingCount.current;
             pendingCount.current = pendingOrders.length;
+            // Alert for new orders
             pendingOrders.forEach((order)=>{
                 if (order.id && !alertedOrders.current.has(order.id)) {
                     alertedOrders.current.add(order.id);
                     if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("New Order Received", {
-                            body: `A new order has arrived from ${order.customerName}.`,
-                            icon: "/favicon.ico"
+                        new Notification("🔔 New Order Received", {
+                            body: `Order from ${order.customerName}`,
+                            icon: "/favicon.ico",
+                            tag: "order-notification",
+                            requireInteraction: true
                         });
                     }
                 }
             });
+            // Clean up alerted orders that are no longer pending
             const pendingIds = new Set(pendingOrders.map((o)=>o.id));
             alertedOrders.current.forEach((id)=>{
                 if (!pendingIds.has(id)) {
@@ -666,12 +696,12 @@ function AudioNotification() {
                                 className: "w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl animate-pulse",
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FaVolumeUp"], {}, void 0, false, {
                                     fileName: "[project]/components/AudioNotification.tsx",
-                                    lineNumber: 232,
+                                    lineNumber: 258,
                                     columnNumber: 33
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/components/AudioNotification.tsx",
-                                lineNumber: 231,
+                                lineNumber: 257,
                                 columnNumber: 29
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -679,7 +709,7 @@ function AudioNotification() {
                                 children: "Enable Order Alerts"
                             }, void 0, false, {
                                 fileName: "[project]/components/AudioNotification.tsx",
-                                lineNumber: 234,
+                                lineNumber: 260,
                                 columnNumber: 29
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -687,7 +717,7 @@ function AudioNotification() {
                                 children: "To ensure you never miss an order, we need to enable audio and prevent your device from sleeping."
                             }, void 0, false, {
                                 fileName: "[project]/components/AudioNotification.tsx",
-                                lineNumber: 235,
+                                lineNumber: 261,
                                 columnNumber: 29
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -698,14 +728,14 @@ function AudioNotification() {
                                         className: "text-xl"
                                     }, void 0, false, {
                                         fileName: "[project]/components/AudioNotification.tsx",
-                                        lineNumber: 242,
+                                        lineNumber: 268,
                                         columnNumber: 33
                                     }, this),
                                     "Enable Audio & Status"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/AudioNotification.tsx",
-                                lineNumber: 238,
+                                lineNumber: 264,
                                 columnNumber: 29
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -713,36 +743,36 @@ function AudioNotification() {
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FaShieldAlt"], {}, void 0, false, {
                                         fileName: "[project]/components/AudioNotification.tsx",
-                                        lineNumber: 246,
+                                        lineNumber: 272,
                                         columnNumber: 33
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                         children: "Ensures 100% notification reliability"
                                     }, void 0, false, {
                                         fileName: "[project]/components/AudioNotification.tsx",
-                                        lineNumber: 247,
+                                        lineNumber: 273,
                                         columnNumber: 33
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/AudioNotification.tsx",
-                                lineNumber: 245,
+                                lineNumber: 271,
                                 columnNumber: 29
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/AudioNotification.tsx",
-                        lineNumber: 226,
+                        lineNumber: 252,
                         columnNumber: 25
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/components/AudioNotification.tsx",
-                    lineNumber: 220,
+                    lineNumber: 246,
                     columnNumber: 21
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/components/AudioNotification.tsx",
-                lineNumber: 218,
+                lineNumber: 244,
                 columnNumber: 13
             }, this),
             audioInitialized && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -752,14 +782,14 @@ function AudioNotification() {
                         className: "w-2 h-2 bg-green-500 rounded-full animate-ping"
                     }, void 0, false, {
                         fileName: "[project]/components/AudioNotification.tsx",
-                        lineNumber: 257,
+                        lineNumber: 283,
                         columnNumber: 21
                     }, this),
-                    "Audio & Wake Lock Active"
+                    "Audio Active 🎵"
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/AudioNotification.tsx",
-                lineNumber: 256,
+                lineNumber: 282,
                 columnNumber: 17
             }, this)
         ]

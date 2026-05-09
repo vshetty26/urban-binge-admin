@@ -65,6 +65,7 @@ export default function AudioNotification() {
     
     const alertsEnabled = useRef(false);
     const alertedOrders = useRef<Set<string>>(new Set());
+    const initialLoadComplete = useRef(false); // Track if first load is done
     const pendingCount = useRef(0);
     const workerRef = useRef<Worker | null>(null);
     const audioCtxRef = useRef<AudioContext | null>(null);
@@ -201,24 +202,34 @@ export default function AudioNotification() {
     useEffect(() => {
         const unsub = subscribeToAllOrders((allOrders) => {
             const pendingOrders = allOrders.filter(o => o.status === "placed");
-            const previousCount = pendingCount.current;
             pendingCount.current = pendingOrders.length;
 
-            // Alert for new orders
-            pendingOrders.forEach(order => {
-                if (order.id && !alertedOrders.current.has(order.id)) {
-                    alertedOrders.current.add(order.id);
-
-                    if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("🔔 New Order Received", {
-                            body: `Order from ${order.customerName}`,
-                            icon: "/favicon.ico",
-                            tag: "order-notification",
-                            requireInteraction: true
-                        });
+            // On first load, mark all existing orders as already alerted (don't ring for them)
+            if (!initialLoadComplete.current) {
+                pendingOrders.forEach(order => {
+                    if (order.id) {
+                        alertedOrders.current.add(order.id);
                     }
-                }
-            });
+                });
+                initialLoadComplete.current = true;
+                console.log(`✅ Initial load complete - marked ${pendingOrders.length} existing orders`);
+            } else {
+                // After first load, only alert for NEW orders
+                pendingOrders.forEach(order => {
+                    if (order.id && !alertedOrders.current.has(order.id)) {
+                        alertedOrders.current.add(order.id);
+
+                        if ("Notification" in window && Notification.permission === "granted") {
+                            new Notification("🔔 New Order Received", {
+                                body: `Order from ${order.customerName}`,
+                                icon: "/favicon.ico",
+                                tag: "order-notification",
+                                requireInteraction: true
+                            });
+                        }
+                    }
+                });
+            }
 
             // Clean up alerted orders that are no longer pending
             const pendingIds = new Set(pendingOrders.map(o => o.id));
