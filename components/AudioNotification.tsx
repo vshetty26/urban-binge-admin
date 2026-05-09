@@ -5,7 +5,19 @@ import { subscribeToAllOrders } from "@/lib/orders";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaVolumeUp, FaBell, FaShieldAlt } from "react-icons/fa";
 
-// ─── Loud Bell Sound via Web Audio API ───
+// ─── Play Custom Audio File ───
+async function playCustomSound(audioPath: string = "/ORDER%20RINGTONE.m4a") {
+    try {
+        const audio = new Audio(audioPath);
+        audio.volume = 1.0; // Full volume
+        await audio.play();
+        console.log(`🔊 Playing custom sound: ${audioPath}`);
+    } catch (err) {
+        console.error(`❌ Error playing sound: ${err}`);
+    }
+}
+
+// ─── Fallback: Loud Bell Sound via Web Audio API ───
 function createBellSound(audioCtx: AudioContext) {
     playBellStrike(audioCtx, audioCtx.currentTime);
     playBellStrike(audioCtx, audioCtx.currentTime + 0.25);
@@ -50,6 +62,7 @@ function playKeepAliveTick(audioCtx: AudioContext) {
 export default function AudioNotification() {
     const [showOverlay, setShowOverlay] = useState(true);
     const [audioInitialized, setAudioInitialized] = useState(false);
+    const [useCustomSound, setUseCustomSound] = useState(true); // true = custom ringtone, false = bell
     
     const alertsEnabled = useRef(false);
     const alertedOrders = useRef<Set<string>>(new Set());
@@ -92,7 +105,11 @@ export default function AudioNotification() {
 
         // Play initial test sound
         console.log("🔊 Playing test sound...");
-        createBellSound(ctx);
+        if (useCustomSound) {
+            await playCustomSound();
+        } else {
+            createBellSound(ctx);
+        }
         
         alertsEnabled.current = true;
         setAudioInitialized(true);
@@ -116,7 +133,6 @@ export default function AudioNotification() {
                 if (e.data === 'start') {
                     if (!timer) {
                         console.log('🔔 Worker: Starting bell timer');
-                        // Ring every 2 seconds for faster response
                         timer = setInterval(() => self.postMessage('tick'), 2000);
                         self.postMessage('tick');
                     }
@@ -147,12 +163,18 @@ export default function AudioNotification() {
                 // Throttle bell to every 2 seconds max
                 if (now - lastBellTime.current > 1500) {
                     console.log(`🔊 Playing bell sound (${pendingCount.current} pending orders)`);
-                    createBellSound(ctx);
+                    if (useCustomSound) {
+                        await playCustomSound();
+                    } else {
+                        createBellSound(ctx);
+                    }
                     lastBellTime.current = now;
                 }
             } else {
                 // Keep audio context alive with quiet tick
-                playKeepAliveTick(ctx);
+                if (!useCustomSound) {
+                    playKeepAliveTick(ctx);
+                }
             }
         };
 
@@ -177,7 +199,7 @@ export default function AudioNotification() {
                 wakeLockRef.current.release().catch(() => {});
             }
         };
-    }, []);
+    }, [useCustomSound]);
 
     const startBell = () => {
         if (!alertsEnabled.current) {
@@ -186,13 +208,6 @@ export default function AudioNotification() {
         }
         console.log("📢 Starting bell...");
         workerRef.current?.postMessage('start');
-    };
-
-    const stopBell = () => {
-        if (pendingCount.current === 0) {
-            console.log("🛑 No pending orders, keeping worker alive for keep-alive...");
-            workerRef.current?.postMessage('start');
-        }
     };
 
     useEffect(() => {
@@ -281,7 +296,7 @@ export default function AudioNotification() {
             {audioInitialized && (
                 <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-semibold shadow-sm border border-green-200">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-ping" />
-                    Audio & Wake Lock Active
+                    Audio Active 🎵
                 </div>
             )}
         </>
