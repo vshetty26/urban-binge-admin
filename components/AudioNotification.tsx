@@ -250,12 +250,30 @@ export default function AudioNotification() {
                         }
 
                         // Play audio once for this order
-                        if (audioInitialized && alertsEnabled.current && useCustomSound) {
-                            playAudioLoud();
-                        } else if (audioInitialized && alertsEnabled.current) {
-                            const ctx = audioCtxRef.current;
-                            if (ctx && ctx.state !== "suspended") {
-                                createBellSound(ctx);
+                        if (audioInitialized && alertsEnabled.current) {
+                            if (useCustomSound) {
+                                playAudioLoud();
+                            } else {
+                                const ctx = audioCtxRef.current;
+                                if (ctx && ctx.state !== "suspended") {
+                                    createBellSound(ctx);
+                                }
+                            }
+                        } else if (audioInitialized) {
+                            // Even if alerts not enabled, try to play audio
+                            if (useCustomSound) {
+                                playAudioLoud();
+                            } else {
+                                const ctx = audioCtxRef.current;
+                                if (ctx) {
+                                    if (ctx.state === "suspended") {
+                                        ctx.resume().then(() => {
+                                            createBellSound(ctx);
+                                        });
+                                    } else {
+                                        createBellSound(ctx);
+                                    }
+                                }
                             }
                         }
                     }
