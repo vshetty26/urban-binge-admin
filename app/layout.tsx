@@ -12,6 +12,9 @@ const inter = Inter({
 export const metadata: Metadata = {
     title: "Urban Binge Admin | Order Management",
     description: "Admin portal for managing Urban Binge restaurant orders and menu.",
+    icons: {
+        icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23DC2626' width='100' height='100' rx='20'/><text x='50' y='70' font-size='60' font-weight='bold' fill='white' text-anchor='middle' font-family='Arial'>UB</text></svg>",
+    },
 };
 
 export default function RootLayout({

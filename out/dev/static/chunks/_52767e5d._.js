@@ -479,22 +479,57 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
-// ─── Play Custom Audio File ───
+// ─── Play Custom Audio File (Complete from Start to End) ───
 async function playCustomSound(audioPath = "/ORDER%20RINGTONE.m4a") {
     try {
         const audio = new Audio(audioPath);
-        audio.volume = 1.0; // Full volume
-        await audio.play();
+        audio.volume = 1.0; // Maximum volume
+        audio.muted = false; // Ensure not muted
+        // Add error handler
+        audio.onerror = (e)=>{
+            console.error(`❌ Audio error: ${e}`);
+        };
+        // Try to play
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.then(()=>{
+                console.log(`✅ Playing complete ringtone: ${audioPath}`);
+            }).catch((err)=>{
+                console.error(`❌ Playback failed: ${err}`);
+                // Fallback to bell sound if custom sound fails
+                console.log("🔔 Falling back to bell sound");
+            });
+        }
     } catch (err) {
-        console.error(`❌ Error playing sound: ${err}`);
+        console.error(`❌ Error creating audio: ${err}`);
     }
 }
-// ─── Fallback: Loud Bell Sound via Web Audio API ───
+// ─── Play Audio Multiple Times for Maximum Audibility (Order Notifications) ───
+async function playAudioLoud(audioPath = "/ORDER%20RINGTONE.m4a") {
+    try {
+        // Play the complete audio file from start to end
+        const audio = new Audio(audioPath);
+        audio.volume = 1.0; // Maximum volume
+        audio.muted = false;
+        try {
+            await audio.play();
+            console.log(`✅ Playing complete ringtone (full duration)`);
+        } catch (err) {
+            console.error(`❌ Playback failed: ${err}`);
+        }
+    } catch (err) {
+        console.error(`❌ Error in audio playback: ${err}`);
+    }
+}
+// ─── Fallback: LOUD Bell Sound via Web Audio API ───
 function createBellSound(audioCtx) {
+    // Play multiple bell strikes for maximum audibility
     playBellStrike(audioCtx, audioCtx.currentTime);
-    playBellStrike(audioCtx, audioCtx.currentTime + 0.25);
+    playBellStrike(audioCtx, audioCtx.currentTime + 0.15);
+    playBellStrike(audioCtx, audioCtx.currentTime + 0.30);
 }
 function playBellStrike(audioCtx, startTime) {
+    // Increased frequencies and gains for louder sound
     const freqs = [
         830,
         1245,
@@ -503,10 +538,10 @@ function playBellStrike(audioCtx, startTime) {
     ];
     const gains = [
         1.0,
-        0.7,
-        0.5,
-        0.3
-    ];
+        0.9,
+        0.8,
+        0.7
+    ]; // Increased from [1.0, 0.7, 0.5, 0.3]
     const durations = [
         1.2,
         0.9,
@@ -520,10 +555,13 @@ function playBellStrike(audioCtx, startTime) {
         const gainNode = audioCtx.createGain();
         gainNode.gain.setValueAtTime(gains[i], startTime);
         gainNode.gain.exponentialRampToValueAtTime(0.001, startTime + durations[i]);
+        // Increased compressor settings for louder output
         const compressor = audioCtx.createDynamicsCompressor();
-        compressor.threshold.setValueAtTime(-10, startTime);
+        compressor.threshold.setValueAtTime(-5, startTime); // Increased from -10
         compressor.knee.setValueAtTime(5, startTime);
-        compressor.ratio.setValueAtTime(4, startTime);
+        compressor.ratio.setValueAtTime(6, startTime); // Increased from 4
+        compressor.attack.setValueAtTime(0.003, startTime);
+        compressor.release.setValueAtTime(0.25, startTime);
         osc.connect(gainNode).connect(compressor).connect(audioCtx.destination);
         osc.start(startTime);
         osc.stop(startTime + durations[i]);
@@ -541,12 +579,12 @@ function playKeepAliveTick(audioCtx) {
 }
 function AudioNotification() {
     _s();
-    const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(22);
-    if ($[0] !== "6f3a9902afea3a95c4e1f6b8b7bf106f73910899063d868c174a1371815e11ad") {
-        for(let $i = 0; $i < 22; $i += 1){
+    const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(23);
+    if ($[0] !== "eed86b2e252c67ddbf422f414a4a99a040f4273ee7bcf76ecd4a36d7dc9b8e61") {
+        for(let $i = 0; $i < 23; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "6f3a9902afea3a95c4e1f6b8b7bf106f73910899063d868c174a1371815e11ad";
+        $[0] = "eed86b2e252c67ddbf422f414a4a99a040f4273ee7bcf76ecd4a36d7dc9b8e61";
     }
     const [showOverlay, setShowOverlay] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
     const [audioInitialized, setAudioInitialized] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
@@ -560,35 +598,44 @@ function AudioNotification() {
         t0 = $[1];
     }
     const alertedOrders = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(t0);
+    const initialLoadComplete = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(false);
+    let t1;
+    if ($[2] === Symbol.for("react.memo_cache_sentinel")) {
+        t1 = new Set();
+        $[2] = t1;
+    } else {
+        t1 = $[2];
+    }
+    const playingOrderIds = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(t1);
     const pendingCount = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(0);
     const workerRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     const audioCtxRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     const wakeLockRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
-    const lastBellTime = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(0);
-    let t1;
-    if ($[2] === Symbol.for("react.memo_cache_sentinel")) {
-        t1 = ({
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(0);
+    let t2;
+    if ($[3] === Symbol.for("react.memo_cache_sentinel")) {
+        t2 = ({
             "AudioNotification[requestWakeLock]": async ()=>{
                 if ("wakeLock" in navigator) {
                     ;
                     try {
                         wakeLockRef.current = await navigator.wakeLock.request("screen");
                         wakeLockRef.current.addEventListener("release", _AudioNotificationRequestWakeLockWakeLockRefCurrentAddEventListener);
-                    } catch (t2) {
-                        const err = t2;
+                    } catch (t3) {
+                        const err = t3;
                         console.error(`❌ Wake Lock Error: ${err.name}, ${err.message}`);
                     }
                 }
             }
         })["AudioNotification[requestWakeLock]"];
-        $[2] = t1;
+        $[3] = t2;
     } else {
-        t1 = $[2];
+        t2 = $[3];
     }
-    const requestWakeLock = t1;
-    let t2;
-    if ($[3] !== useCustomSound) {
-        t2 = ({
+    const requestWakeLock = t2;
+    let t3;
+    if ($[4] !== useCustomSound) {
+        t3 = ({
             "AudioNotification[handleEnableAudio]": async ()=>{
                 const AudioCtx = window.AudioContext || window.webkitAudioContext;
                 if (!audioCtxRef.current) {
@@ -612,16 +659,15 @@ function AudioNotification() {
                 }
             }
         })["AudioNotification[handleEnableAudio]"];
-        $[3] = useCustomSound;
-        $[4] = t2;
+        $[4] = useCustomSound;
+        $[5] = t3;
     } else {
-        t2 = $[4];
+        t3 = $[5];
     }
-    const handleEnableAudio = t2;
-    let t3;
+    const handleEnableAudio = t3;
     let t4;
-    if ($[5] !== useCustomSound) {
-        t3 = ({
+    if ($[6] === Symbol.for("react.memo_cache_sentinel")) {
+        t4 = ({
             "AudioNotification[useEffect()]": ()=>{
                 const blob = new Blob([
                     "\n            let timer = null;\n            self.onmessage = function(e) {\n                if (e.data === 'start') {\n                    if (!timer) {\n                        timer = setInterval(() => self.postMessage('tick'), 2000);\n                        self.postMessage('tick');\n                    }\n                } else if (e.data === 'stop') {\n                    clearInterval(timer);\n                    timer = null;\n                }\n            };\n        "
@@ -630,30 +676,7 @@ function AudioNotification() {
                 });
                 const worker = new Worker(URL.createObjectURL(blob));
                 workerRef.current = worker;
-                worker.onmessage = async ()=>{
-                    const ctx_0 = audioCtxRef.current;
-                    if (!ctx_0 || !alertsEnabled.current) {
-                        return;
-                    }
-                    if (ctx_0.state === "suspended") {
-                        await ctx_0.resume().catch(_AudioNotificationUseEffectAnonymousAnonymous);
-                    }
-                    if (pendingCount.current > 0) {
-                        const now = Date.now();
-                        if (now - lastBellTime.current > 1500) {
-                            if (useCustomSound) {
-                                await playCustomSound();
-                            } else {
-                                createBellSound(ctx_0);
-                            }
-                            lastBellTime.current = now;
-                        }
-                    } else {
-                        if (!useCustomSound) {
-                            playKeepAliveTick(ctx_0);
-                        }
-                    }
-                };
+                worker.onmessage = _temp;
                 const handleVisibilityChange = {
                     "AudioNotification[useEffect() > handleVisibilityChange]": ()=>{
                         if (document.visibilityState === "visible") {
@@ -669,72 +692,82 @@ function AudioNotification() {
                     worker.terminate();
                     document.removeEventListener("visibilitychange", handleVisibilityChange);
                     if (wakeLockRef.current) {
-                        wakeLockRef.current.release().catch(_AudioNotificationUseEffectAnonymousAnonymous2);
+                        wakeLockRef.current.release().catch(_AudioNotificationUseEffectAnonymousAnonymous);
                     }
                 };
             }
         })["AudioNotification[useEffect()]"];
-        t4 = [
+        $[6] = t4;
+    } else {
+        t4 = $[6];
+    }
+    let t5;
+    if ($[7] !== useCustomSound) {
+        t5 = [
             useCustomSound
         ];
-        $[5] = useCustomSound;
-        $[6] = t3;
-        $[7] = t4;
-    } else {
-        t3 = $[6];
-        t4 = $[7];
-    }
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])(t3, t4);
-    let t5;
-    if ($[8] === Symbol.for("react.memo_cache_sentinel")) {
-        t5 = ({
-            "AudioNotification[startBell]": ()=>{
-                if (!alertsEnabled.current) {
-                    return;
-                }
-                workerRef.current?.postMessage("start");
-            }
-        })["AudioNotification[startBell]"];
+        $[7] = useCustomSound;
         $[8] = t5;
     } else {
         t5 = $[8];
     }
-    const startBell = t5;
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])(t4, t5);
     let t6;
     let t7;
-    if ($[9] !== audioInitialized) {
+    if ($[9] !== audioInitialized || $[10] !== useCustomSound) {
         t6 = ({
             "AudioNotification[useEffect()]": ()=>{
                 const unsub = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$orders$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["subscribeToAllOrders"])({
                     "AudioNotification[useEffect() > subscribeToAllOrders()]": (allOrders)=>{
                         const pendingOrders = allOrders.filter(_AudioNotificationUseEffectSubscribeToAllOrdersAllOrdersFilter);
                         pendingCount.current = pendingOrders.length;
-                        pendingOrders.forEach({
-                            "AudioNotification[useEffect() > subscribeToAllOrders() > pendingOrders.forEach()]": (order)=>{
-                                if (order.id && !alertedOrders.current.has(order.id)) {
-                                    alertedOrders.current.add(order.id);
-                                    if ("Notification" in window && Notification.permission === "granted") {
-                                        new Notification("\uD83D\uDD14 New Order Received", {
-                                            body: `Order from ${order.customerName}`,
-                                            icon: "/favicon.ico",
-                                            tag: "order-notification",
-                                            requireInteraction: true
-                                        });
+                        if (!initialLoadComplete.current) {
+                            pendingOrders.forEach({
+                                "AudioNotification[useEffect() > subscribeToAllOrders() > pendingOrders.forEach()]": (order)=>{
+                                    if (order.id) {
+                                        alertedOrders.current.add(order.id);
                                     }
                                 }
-                            }
-                        }["AudioNotification[useEffect() > subscribeToAllOrders() > pendingOrders.forEach()]"]);
+                            }["AudioNotification[useEffect() > subscribeToAllOrders() > pendingOrders.forEach()]"]);
+                            initialLoadComplete.current = true;
+                            console.log(`✅ Initial load complete - marked ${pendingOrders.length} existing orders`);
+                        } else {
+                            pendingOrders.forEach({
+                                "AudioNotification[useEffect() > subscribeToAllOrders() > pendingOrders.forEach()]": (order_0)=>{
+                                    if (order_0.id && !alertedOrders.current.has(order_0.id)) {
+                                        alertedOrders.current.add(order_0.id);
+                                        playingOrderIds.current.add(order_0.id);
+                                        if ("Notification" in window && Notification.permission === "granted") {
+                                            new Notification("\uD83D\uDD14 New Order Received", {
+                                                body: `Order from ${order_0.customerName}`,
+                                                icon: "/favicon.ico",
+                                                tag: "order-notification",
+                                                requireInteraction: true
+                                            });
+                                        }
+                                        if (audioInitialized && alertsEnabled.current && useCustomSound) {
+                                            playAudioLoud();
+                                        } else {
+                                            if (audioInitialized && alertsEnabled.current) {
+                                                const ctx_0 = audioCtxRef.current;
+                                                if (ctx_0 && ctx_0.state !== "suspended") {
+                                                    createBellSound(ctx_0);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }["AudioNotification[useEffect() > subscribeToAllOrders() > pendingOrders.forEach()]"]);
+                        }
                         const pendingIds = new Set(pendingOrders.map(_AudioNotificationUseEffectSubscribeToAllOrdersPendingOrdersMap));
                         alertedOrders.current.forEach({
                             "AudioNotification[useEffect() > subscribeToAllOrders() > alertedOrders.current.forEach()]": (id)=>{
                                 if (!pendingIds.has(id)) {
                                     alertedOrders.current.delete(id);
+                                    playingOrderIds.current.delete(id);
                                 }
                             }
                         }["AudioNotification[useEffect() > subscribeToAllOrders() > alertedOrders.current.forEach()]"]);
-                        if (audioInitialized) {
-                            startBell();
-                        }
                     }
                 }["AudioNotification[useEffect() > subscribeToAllOrders()]"]);
                 return ()=>{
@@ -743,18 +776,20 @@ function AudioNotification() {
             }
         })["AudioNotification[useEffect()]"];
         t7 = [
-            audioInitialized
+            audioInitialized,
+            useCustomSound
         ];
         $[9] = audioInitialized;
-        $[10] = t6;
-        $[11] = t7;
+        $[10] = useCustomSound;
+        $[11] = t6;
+        $[12] = t7;
     } else {
-        t6 = $[10];
-        t7 = $[11];
+        t6 = $[11];
+        t7 = $[12];
     }
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])(t6, t7);
     let t8;
-    if ($[12] !== handleEnableAudio || $[13] !== showOverlay) {
+    if ($[13] !== handleEnableAudio || $[14] !== showOverlay) {
         t8 = showOverlay && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["motion"].div, {
             initial: {
                 opacity: 0
@@ -783,12 +818,12 @@ function AudioNotification() {
                         className: "w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl animate-pulse",
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaVolumeUp"], {}, void 0, false, {
                             fileName: "[project]/components/AudioNotification.tsx",
-                            lineNumber: 279,
+                            lineNumber: 317,
                             columnNumber: 242
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/components/AudioNotification.tsx",
-                        lineNumber: 279,
+                        lineNumber: 317,
                         columnNumber: 109
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -796,7 +831,7 @@ function AudioNotification() {
                         children: "Enable Order Alerts"
                     }, void 0, false, {
                         fileName: "[project]/components/AudioNotification.tsx",
-                        lineNumber: 279,
+                        lineNumber: 317,
                         columnNumber: 262
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -804,7 +839,7 @@ function AudioNotification() {
                         children: "To ensure you never miss an order, we need to enable audio and prevent your device from sleeping."
                     }, void 0, false, {
                         fileName: "[project]/components/AudioNotification.tsx",
-                        lineNumber: 279,
+                        lineNumber: 317,
                         columnNumber: 340
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -815,14 +850,14 @@ function AudioNotification() {
                                 className: "text-xl"
                             }, void 0, false, {
                                 fileName: "[project]/components/AudioNotification.tsx",
-                                lineNumber: 279,
+                                lineNumber: 317,
                                 columnNumber: 738
                             }, this),
                             "Enable Audio & Status"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/AudioNotification.tsx",
-                        lineNumber: 279,
+                        lineNumber: 317,
                         columnNumber: 491
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -830,55 +865,55 @@ function AudioNotification() {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaShieldAlt"], {}, void 0, false, {
                                 fileName: "[project]/components/AudioNotification.tsx",
-                                lineNumber: 279,
+                                lineNumber: 317,
                                 columnNumber: 885
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                 children: "Ensures 100% notification reliability"
                             }, void 0, false, {
                                 fileName: "[project]/components/AudioNotification.tsx",
-                                lineNumber: 279,
+                                lineNumber: 317,
                                 columnNumber: 900
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/AudioNotification.tsx",
-                        lineNumber: 279,
+                        lineNumber: 317,
                         columnNumber: 802
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/AudioNotification.tsx",
-                lineNumber: 271,
+                lineNumber: 309,
                 columnNumber: 109
             }, this)
         }, void 0, false, {
             fileName: "[project]/components/AudioNotification.tsx",
-            lineNumber: 265,
+            lineNumber: 303,
             columnNumber: 25
         }, this);
-        $[12] = handleEnableAudio;
-        $[13] = showOverlay;
-        $[14] = t8;
+        $[13] = handleEnableAudio;
+        $[14] = showOverlay;
+        $[15] = t8;
     } else {
-        t8 = $[14];
+        t8 = $[15];
     }
     let t9;
-    if ($[15] !== t8) {
+    if ($[16] !== t8) {
         t9 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$components$2f$AnimatePresence$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["AnimatePresence"], {
             children: t8
         }, void 0, false, {
             fileName: "[project]/components/AudioNotification.tsx",
-            lineNumber: 288,
+            lineNumber: 326,
             columnNumber: 10
         }, this);
-        $[15] = t8;
-        $[16] = t9;
+        $[16] = t8;
+        $[17] = t9;
     } else {
-        t9 = $[16];
+        t9 = $[17];
     }
     let t10;
-    if ($[17] !== audioInitialized) {
+    if ($[18] !== audioInitialized) {
         t10 = audioInitialized && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "fixed bottom-4 right-4 z-50 flex items-center gap-2 px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-semibold shadow-sm border border-green-200",
             children: [
@@ -886,38 +921,38 @@ function AudioNotification() {
                     className: "w-2 h-2 bg-green-500 rounded-full animate-ping"
                 }, void 0, false, {
                     fileName: "[project]/components/AudioNotification.tsx",
-                    lineNumber: 296,
+                    lineNumber: 334,
                     columnNumber: 209
                 }, this),
                 "Audio Active 🎵"
             ]
         }, void 0, true, {
             fileName: "[project]/components/AudioNotification.tsx",
-            lineNumber: 296,
+            lineNumber: 334,
             columnNumber: 31
         }, this);
-        $[17] = audioInitialized;
-        $[18] = t10;
+        $[18] = audioInitialized;
+        $[19] = t10;
     } else {
-        t10 = $[18];
+        t10 = $[19];
     }
     let t11;
-    if ($[19] !== t10 || $[20] !== t9) {
+    if ($[20] !== t10 || $[21] !== t9) {
         t11 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
             children: [
                 t9,
                 t10
             ]
         }, void 0, true);
-        $[19] = t10;
-        $[20] = t9;
-        $[21] = t11;
+        $[20] = t10;
+        $[21] = t9;
+        $[22] = t11;
     } else {
-        t11 = $[21];
+        t11 = $[22];
     }
     return t11;
 }
-_s(AudioNotification, "IzHgrz6fzNtvvJ7Wi8+UrpP08w8=");
+_s(AudioNotification, "HkGuMR3cQIC5QzLCvSkCsl+GNiY=");
 _c = AudioNotification;
 function _AudioNotificationUseEffectSubscribeToAllOrdersPendingOrdersMap(o_0) {
     return o_0.id;
@@ -925,8 +960,8 @@ function _AudioNotificationUseEffectSubscribeToAllOrdersPendingOrdersMap(o_0) {
 function _AudioNotificationUseEffectSubscribeToAllOrdersAllOrdersFilter(o) {
     return o.status === "placed";
 }
-function _AudioNotificationUseEffectAnonymousAnonymous2() {}
 function _AudioNotificationUseEffectAnonymousAnonymous() {}
+async function _temp() {}
 function _AudioNotificationHandleEnableAudioAnonymous(err_0) {
     console.error("\u274C Failed to resume audio context:", err_0);
 }

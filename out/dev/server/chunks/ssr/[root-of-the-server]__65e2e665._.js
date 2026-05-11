@@ -592,18 +592,19 @@ function AdminOrderCard({ order, onUpdateStatus, isRinging }) {
                                         columnNumber: 25
                                     }, this),
                                     order.address.distance && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                        className: "text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded flex items-center gap-1",
+                                        className: `text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1 ${parseFloat(order.address.distance) > 3 ? "bg-red-50 text-red-600 border border-red-200" : "bg-blue-50 text-blue-600 border border-blue-200"}`,
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FaMapMarkerAlt"], {
                                                 size: 8
                                             }, void 0, false, {
                                                 fileName: "[project]/app/orders/page.tsx",
-                                                lineNumber: 129,
+                                                lineNumber: 133,
                                                 columnNumber: 33
                                             }, this),
                                             " ",
                                             order.address.distance,
-                                            " km"
+                                            " km",
+                                            parseFloat(order.address.distance) > 3 && " ⚠️ OUT OF RANGE"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/orders/page.tsx",
@@ -624,7 +625,7 @@ function AdminOrderCard({ order, onUpdateStatus, isRinging }) {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/orders/page.tsx",
-                                lineNumber: 133,
+                                lineNumber: 138,
                                 columnNumber: 21
                             }, this),
                             order.deliveryCharge > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -636,7 +637,7 @@ function AdminOrderCard({ order, onUpdateStatus, isRinging }) {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/orders/page.tsx",
-                                lineNumber: 135,
+                                lineNumber: 140,
                                 columnNumber: 25
                             }, this)
                         ]
@@ -655,14 +656,14 @@ function AdminOrderCard({ order, onUpdateStatus, isRinging }) {
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FaCheckCircle"], {}, void 0, false, {
                                         fileName: "[project]/app/orders/page.tsx",
-                                        lineNumber: 146,
+                                        lineNumber: 151,
                                         columnNumber: 29
                                     }, this),
                                     " Accept"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/orders/page.tsx",
-                                lineNumber: 141,
+                                lineNumber: 146,
                                 columnNumber: 25
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -672,20 +673,20 @@ function AdminOrderCard({ order, onUpdateStatus, isRinging }) {
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FaTimesCircle"], {}, void 0, false, {
                                         fileName: "[project]/app/orders/page.tsx",
-                                        lineNumber: 153,
+                                        lineNumber: 158,
                                         columnNumber: 29
                                     }, this),
                                     " Reject"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/orders/page.tsx",
-                                lineNumber: 148,
+                                lineNumber: 153,
                                 columnNumber: 25
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/orders/page.tsx",
-                        lineNumber: 140,
+                        lineNumber: 145,
                         columnNumber: 21
                     }, this),
                     order.status === "accepted" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -697,19 +698,19 @@ function AdminOrderCard({ order, onUpdateStatus, isRinging }) {
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FaCheckCircle"], {}, void 0, false, {
                                     fileName: "[project]/app/orders/page.tsx",
-                                    lineNumber: 164,
+                                    lineNumber: 169,
                                     columnNumber: 29
                                 }, this),
                                 " Mark as Out for Delivery"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/orders/page.tsx",
-                            lineNumber: 159,
+                            lineNumber: 164,
                             columnNumber: 25
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/orders/page.tsx",
-                        lineNumber: 158,
+                        lineNumber: 163,
                         columnNumber: 21
                     }, this),
                     order.status === "out_for_delivery" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -719,19 +720,19 @@ function AdminOrderCard({ order, onUpdateStatus, isRinging }) {
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FaCheckCircle"], {}, void 0, false, {
                                     fileName: "[project]/app/orders/page.tsx",
-                                    lineNumber: 171,
+                                    lineNumber: 176,
                                     columnNumber: 29
                                 }, this),
                                 " Out for Delivery"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/orders/page.tsx",
-                            lineNumber: 170,
+                            lineNumber: 175,
                             columnNumber: 25
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/orders/page.tsx",
-                        lineNumber: 169,
+                        lineNumber: 174,
                         columnNumber: 21
                     }, this),
                     order.status === "rejected" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -741,19 +742,19 @@ function AdminOrderCard({ order, onUpdateStatus, isRinging }) {
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FaTimesCircle"], {}, void 0, false, {
                                     fileName: "[project]/app/orders/page.tsx",
-                                    lineNumber: 178,
+                                    lineNumber: 183,
                                     columnNumber: 29
                                 }, this),
                                 " Rejected"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/orders/page.tsx",
-                            lineNumber: 177,
+                            lineNumber: 182,
                             columnNumber: 25
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/orders/page.tsx",
-                        lineNumber: 176,
+                        lineNumber: 181,
                         columnNumber: 21
                     }, this)
                 ]
@@ -774,15 +775,11 @@ function AdminOrdersPage() {
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(true);
     const [activeTab, setActiveTab] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("out_for_delivery");
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        console.log("🔄 Orders page mounted - subscribing to orders");
         const unsub = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$orders$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["subscribeToAllOrders"])((allOrders)=>{
-            console.log("📥 Orders received in component:", allOrders.length);
-            console.log("📋 Order details:", allOrders);
             setOrders(allOrders);
             setLoading(false);
-            // Section 9 - Scroll admin dashboard to new order immediately
+            // Scroll admin dashboard to new order immediately
             if (allOrders.some((o)=>o.status === "placed")) {
-                console.log("🔔 New placed order detected - scrolling to top");
                 setTimeout(()=>{
                     window.scrollTo({
                         top: 0,
@@ -793,16 +790,13 @@ function AdminOrdersPage() {
         });
         // Auto-transition accepted orders to out_for_delivery
         const autoTransitionInterval = setInterval(async ()=>{
-            console.log("⏰ Running auto-transition check");
             await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$orders$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["autoTransitionAcceptedOrders"])();
         }, 10000); // Check every 10 seconds
         // Fallback: if no orders after 5 seconds, try fetching directly
         const timeout = setTimeout(async ()=>{
             if (orders.length === 0) {
-                console.log("⏱️ No orders received after 5s - trying direct fetch");
                 try {
                     const allOrders = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$orders$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getAllOrders"])();
-                    console.log("📥 Direct fetch - Orders:", allOrders.length);
                     setOrders(allOrders);
                     setLoading(false);
                 } catch (err) {
@@ -811,7 +805,6 @@ function AdminOrdersPage() {
             }
         }, 5000);
         return ()=>{
-            console.log("🔌 Unsubscribing from orders");
             clearTimeout(timeout);
             clearInterval(autoTransitionInterval);
             unsub();
@@ -871,7 +864,7 @@ function AdminOrdersPage() {
                                     className: "text-primary text-xl"
                                 }, void 0, false, {
                                     fileName: "[project]/app/orders/page.tsx",
-                                    lineNumber: 272,
+                                    lineNumber: 269,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -881,7 +874,7 @@ function AdminOrdersPage() {
                                             children: "Urban Binge Admin"
                                         }, void 0, false, {
                                             fileName: "[project]/app/orders/page.tsx",
-                                            lineNumber: 274,
+                                            lineNumber: 271,
                                             columnNumber: 29
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -889,19 +882,19 @@ function AdminOrdersPage() {
                                             children: "Order Management"
                                         }, void 0, false, {
                                             fileName: "[project]/app/orders/page.tsx",
-                                            lineNumber: 275,
+                                            lineNumber: 272,
                                             columnNumber: 29
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/orders/page.tsx",
-                                    lineNumber: 273,
+                                    lineNumber: 270,
                                     columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/orders/page.tsx",
-                            lineNumber: 271,
+                            lineNumber: 268,
                             columnNumber: 21
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -915,12 +908,12 @@ function AdminOrdersPage() {
                                         size: 16
                                     }, void 0, false, {
                                         fileName: "[project]/app/orders/page.tsx",
-                                        lineNumber: 284,
+                                        lineNumber: 281,
                                         columnNumber: 29
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/app/orders/page.tsx",
-                                    lineNumber: 279,
+                                    lineNumber: 276,
                                     columnNumber: 25
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -934,7 +927,7 @@ function AdminOrdersPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/orders/page.tsx",
-                                            lineNumber: 287,
+                                            lineNumber: 284,
                                             columnNumber: 29
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -945,35 +938,35 @@ function AdminOrdersPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/orders/page.tsx",
-                                            lineNumber: 288,
+                                            lineNumber: 285,
                                             columnNumber: 29
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/orders/page.tsx",
-                                    lineNumber: 286,
+                                    lineNumber: 283,
                                     columnNumber: 25
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/orders/page.tsx",
-                            lineNumber: 278,
+                            lineNumber: 275,
                             columnNumber: 21
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/orders/page.tsx",
-                    lineNumber: 270,
+                    lineNumber: 267,
                     columnNumber: 17
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/orders/page.tsx",
-                lineNumber: 269,
+                lineNumber: 266,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$AdminNavbar$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {}, void 0, false, {
                 fileName: "[project]/app/orders/page.tsx",
-                lineNumber: 294,
+                lineNumber: 291,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -991,17 +984,17 @@ function AdminOrdersPage() {
                             ]
                         }, tab.key, true, {
                             fileName: "[project]/app/orders/page.tsx",
-                            lineNumber: 300,
+                            lineNumber: 297,
                             columnNumber: 25
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/app/orders/page.tsx",
-                    lineNumber: 298,
+                    lineNumber: 295,
                     columnNumber: 17
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/orders/page.tsx",
-                lineNumber: 297,
+                lineNumber: 294,
                 columnNumber: 13
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1014,12 +1007,12 @@ function AdminOrdersPage() {
                             className: "animate-spin w-8 h-8 border-3 border-primary border-t-transparent rounded-full"
                         }, void 0, false, {
                             fileName: "[project]/app/orders/page.tsx",
-                            lineNumber: 319,
+                            lineNumber: 316,
                             columnNumber: 29
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/orders/page.tsx",
-                        lineNumber: 318,
+                        lineNumber: 315,
                         columnNumber: 25
                     }, this) : filteredOrders.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "text-center py-20",
@@ -1028,7 +1021,7 @@ function AdminOrdersPage() {
                                 className: "text-4xl text-gray-300 mx-auto mb-4"
                             }, void 0, false, {
                                 fileName: "[project]/app/orders/page.tsx",
-                                lineNumber: 323,
+                                lineNumber: 320,
                                 columnNumber: 29
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1040,13 +1033,13 @@ function AdminOrdersPage() {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/orders/page.tsx",
-                                lineNumber: 324,
+                                lineNumber: 321,
                                 columnNumber: 29
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/orders/page.tsx",
-                        lineNumber: 322,
+                        lineNumber: 319,
                         columnNumber: 25
                     }, this) : filteredOrders.map((order)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(AdminOrderCard, {
                             order: order,
@@ -1054,23 +1047,23 @@ function AdminOrdersPage() {
                             isRinging: order.status === "placed"
                         }, order.id, false, {
                             fileName: "[project]/app/orders/page.tsx",
-                            lineNumber: 328,
+                            lineNumber: 325,
                             columnNumber: 29
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/app/orders/page.tsx",
-                    lineNumber: 316,
+                    lineNumber: 313,
                     columnNumber: 17
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/orders/page.tsx",
-                lineNumber: 315,
+                lineNumber: 312,
                 columnNumber: 13
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/orders/page.tsx",
-        lineNumber: 267,
+        lineNumber: 264,
         columnNumber: 9
     }, this);
 }

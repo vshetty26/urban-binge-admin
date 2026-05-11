@@ -833,6 +833,10 @@
     height: calc(var(--spacing) * 89);
   }
 
+  .h-204 {
+    height: calc(var(--spacing) * 204);
+  }
+
   .h-full {
     height: 100%;
   }
@@ -1399,6 +1403,14 @@
 
   .p-8 {
     padding: calc(var(--spacing) * 8);
+  }
+
+  .p-43 {
+    padding: calc(var(--spacing) * 43);
+  }
+
+  .p-44 {
+    padding: calc(var(--spacing) * 44);
   }
 
   .px-1 {

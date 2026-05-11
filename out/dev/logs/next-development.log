@@ -1,3 +1,49 @@
-[00:00:02.351] Server  LOG     ✓ Ready in 1939ms
-[00:00:07.183] Server  LOG     ○ Compiling / ...
-[00:00:22.310] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:01.068] Server  LOG     ✓ Ready in 791ms
+[00:00:12.181] Server  WARN    ⚠ Cross origin request detected from 172.30.6.65 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+[00:00:12.204] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:21.206] Browser LOG     📦 Orders snapshot: 56 total
+[00:00:21.206] Browser LOG     ✅ Initial load complete - marked 0 existing orders
+[00:00:21.906] Browser WARN    Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior
+[00:00:21.906] Browser LOG     📦 Orders snapshot: 56 total
+[00:00:22.562] Browser LOG     📦 Orders snapshot: 56 total
+[00:00:22.562] Browser LOG     ✅ Playing: /ORDER%20RINGTONE.m4a
+[00:01:56.666] Browser LOG     📦 Orders snapshot: 56 total
+[00:14:34.678] Server  LOG     ✓ Compiled in 1245ms
+[00:14:43.973] Server  LOG     ✓ Compiled in 191ms
+[00:14:52.618] Server  LOG     ✓ Compiled in 163ms
+[00:15:01.487] Server  LOG     ✓ Compiled in 163ms
+[00:17:17.326] Server  LOG     ✓ Compiled in 257ms
+[00:17:26.944] Server  LOG     ✓ Compiled in 103ms
+[00:17:52.099] Browser LOG     📦 Orders snapshot: 57 total
+[00:17:52.099] Browser LOG     📦 Orders snapshot: 57 total
+[00:17:52.743] Browser LOG     ✅ Playing: /ORDER%20RINGTONE.m4a
+[00:17:54.495] Browser LOG     ✅ Playing: /ORDER%20RINGTONE.m4a
+[00:17:56.491] Browser LOG     ✅ Playing: /ORDER%20RINGTONE.m4a
+[00:17:58.504] Browser LOG     ✅ Playing: /ORDER%20RINGTONE.m4a
+[00:18:00.509] Browser LOG     ✅ Playing: /ORDER%20RINGTONE.m4a
+[00:18:02.504] Browser LOG     ✅ Playing: /ORDER%20RINGTONE.m4a
+[00:18:04.497] Browser LOG     ✅ Playing: /ORDER%20RINGTONE.m4a
+[00:18:06.498] Browser LOG     ✅ Playing: /ORDER%20RINGTONE.m4a
+[00:18:08.498] Browser LOG     ✅ Playing: /ORDER%20RINGTONE.m4a
+[00:18:10.301] Browser LOG     📦 Orders snapshot: 57 total
+[00:18:10.302] Browser LOG     📦 Orders snapshot: 57 total
+[00:20:09.748] Server  LOG     ✓ Compiled in 185ms
+[00:20:10.097] Browser LOG     📦 Orders snapshot: 57 total
+[00:20:10.098] Browser LOG     ✅ Initial load complete - marked 0 existing orders
+[00:20:42.967] Server  LOG     ✓ Compiled in 226ms
+[00:20:43.095] Browser LOG     📦 Orders snapshot: 57 total
+[00:20:43.095] Browser LOG     ✅ Initial load complete - marked 0 existing orders
+[00:20:52.104] Browser LOG     📦 Orders snapshot: 58 total
+[00:20:52.104] Browser LOG     📦 Orders snapshot: 58 total
+[00:20:54.306] Server  LOG     ✓ Compiled in 336ms
+[00:20:55.096] Browser LOG     📦 Orders snapshot: 58 total
+[00:20:55.096] Browser LOG     ✅ Initial load complete - marked 1 existing orders
+[00:21:00.475] Server  LOG     ✓ Compiled in 144ms
+[00:21:12.096] Browser LOG     📦 Orders snapshot: 58 total
+[00:21:12.096] Browser LOG     📦 Orders snapshot: 58 total
+[00:21:28.168] Browser LOG     📦 Orders snapshot: 59 total
+[00:21:28.168] Browser LOG     📦 Orders snapshot: 59 total
+[00:21:43.096] Browser LOG     📦 Orders snapshot: 59 total
+[00:21:43.096] Browser LOG     📦 Orders snapshot: 59 total
+[00:22:34.590] Server  LOG     ✓ Compiled in 218ms
